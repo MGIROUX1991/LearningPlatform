@@ -5,10 +5,22 @@ import { QUEBEC_CURRICULUM } from '../data/quebecCurriculum';
 import { BookOpen, Calculator, Flame, Trophy, Target, TrendingUp, Award, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, dailyQuests, progress, XP_PER_LEVEL } = useApp();
+  const { user, dailyQuests, progress, XP_PER_LEVEL, loading } = useApp();
   
-  const xpToNextLevel = XP_PER_LEVEL - (user.xp % XP_PER_LEVEL);
-  const xpProgress = ((user.xp % XP_PER_LEVEL) / XP_PER_LEVEL) * 100;
+  // Show loading state if user data is not ready
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-white text-xl">Chargement...</div>
+      </div>
+    );
+  }
+  
+  // Safe calculations after null check
+  const userXP = user?.xp || 0;
+  const userLevel = user?.level || 1;
+  const xpToNextLevel = XP_PER_LEVEL - (userXP % XP_PER_LEVEL);
+  const xpProgress = ((userXP % XP_PER_LEVEL) / XP_PER_LEVEL) * 100;
 
   const getSubjectProgress = (subjectId) => {
     switch (subjectId) {
@@ -81,7 +93,7 @@ const Dashboard = () => {
     category: subject.category,
   }));
 
-  const recentAchievements = user.achievements.slice(-3).reverse();
+  const recentAchievements = (user?.achievements || []).slice(-3).reverse();
 
   // Competency checklist state
   const [expandedSubjects, setExpandedSubjects] = useState({});
@@ -112,9 +124,9 @@ const Dashboard = () => {
               <span className="text-gray-300 text-sm">Niveau actuel</span>
               <Trophy className="w-5 h-5 text-yellow-400" />
             </div>
-            <div className="text-4xl font-bold text-white mb-2">{user.level}</div>
+            <div className="text-4xl font-bold text-white mb-2">{userLevel}</div>
             <div className="text-sm text-gray-400">
-              {xpToNextLevel} XP jusqu'au niveau {user.level + 1}
+              {xpToNextLevel} XP jusqu'au niveau {userLevel + 1}
             </div>
             <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
               <div
@@ -129,7 +141,7 @@ const Dashboard = () => {
               <span className="text-gray-300 text-sm">Points d'expérience</span>
               <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
-            <div className="text-4xl font-bold text-white mb-2">{user.xp}</div>
+            <div className="text-4xl font-bold text-white mb-2">{userXP}</div>
             <div className="text-sm text-gray-400">Total accumulé</div>
           </div>
 
@@ -138,7 +150,7 @@ const Dashboard = () => {
               <span className="text-gray-300 text-sm">Série quotidienne</span>
               <Flame className="w-5 h-5 text-orange-400" />
             </div>
-            <div className="text-4xl font-bold text-white mb-2">{user.streak}</div>
+            <div className="text-4xl font-bold text-white mb-2">{user?.streak || 0}</div>
             <div className="text-sm text-gray-400">jours consécutifs</div>
           </div>
         </div>
