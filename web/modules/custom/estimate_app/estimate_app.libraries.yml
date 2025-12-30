@@ -1,0 +1,11 @@
+Defines the JS library for the live calculation.
+
+estimate_calculator:
+version: 1.x
+js:
+js/estimate-calculator.js: {}
+dependencies:
+# Always include jQuery for DOM manipulation in Drupal JS
+- core/jquery
+- core/drupal
+- core/drupalSettings

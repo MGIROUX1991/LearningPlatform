@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for the Estimate App module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Attaches the custom JavaScript library to the Estimate creation and edit forms.
+ * This is where the live calculator logic lives.
+ */
+function estimate_app_form_node_estimate_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Attach the 'estimate_app/estimate_calculator' library defined in 
+  // estimate_app.libraries.yml.
+  $form['#attached']['library'][] = 'estimate_app/estimate_calculator';
+  
+  // Note: The JavaScript file handles setting the fields as disabled/read-only 
+  // and performing the live calculation.
+}

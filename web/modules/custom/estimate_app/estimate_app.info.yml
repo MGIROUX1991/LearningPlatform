@@ -1,0 +1,9 @@
+name: 'Estimate App'
+type: module
+description: 'Provides custom functionality for the Estimate App, including live field calculations and form enhancements.'
+core_version_requirement: '^9 || ^10'
+package: 'Custom'
+version: '1.0'
+dependencies:
+  - drupal:paragraphs
+  - drupal:inline_entity_form
