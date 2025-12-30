@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { QUEBEC_CURRICULUM } from '../data/quebecCurriculum';
-import { BookOpen, Calculator, Flame, Trophy, Target, TrendingUp, Award } from 'lucide-react';
+import { BookOpen, Calculator, Flame, Trophy, Target, TrendingUp, Award, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, dailyQuests, progress, XP_PER_LEVEL } = useApp();
@@ -81,6 +82,25 @@ const Dashboard = () => {
   }));
 
   const recentAchievements = user.achievements.slice(-3).reverse();
+
+  // Competency checklist state
+  const [expandedSubjects, setExpandedSubjects] = useState({});
+
+  const toggleSubject = (subjectId) => {
+    setExpandedSubjects(prev => ({
+      ...prev,
+      [subjectId]: !prev[subjectId],
+    }));
+  };
+
+  // Get all subjects with competencies
+  const subjectsWithCompetencies = mainSubjects.map(subject => {
+    const curriculumSubject = QUEBEC_CURRICULUM.subjects[subject.id];
+    return {
+      ...subject,
+      competencies: curriculumSubject?.competencies || [],
+    };
+  }).filter(subject => subject.competencies.length > 0);
 
   return (
     <div className="space-y-8">
@@ -198,6 +218,93 @@ const Dashboard = () => {
                 </div>
                 <div className="text-yellow-400 font-semibold">+200 XP</div>
               </div>
+            </div>
+          </div>
+
+          {/* Competency Checklist */}
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+            <div className="flex items-center space-x-2 mb-6">
+              <CheckCircle className="w-6 h-6 text-green-400" />
+              <h2 className="text-2xl font-bold text-white">Compétences par matière</h2>
+            </div>
+            <div className="space-y-4">
+              {subjectsWithCompetencies.map((subject) => {
+                const Icon = subject.icon;
+                const isExpanded = expandedSubjects[subject.id];
+                const completedCount = 0; // TODO: Track completed competencies
+                const totalCount = subject.competencies.length;
+
+                return (
+                  <div
+                    key={subject.id}
+                    className="bg-white/5 rounded-xl border border-white/10 overflow-hidden"
+                  >
+                    <button
+                      onClick={() => toggleSubject(subject.id)}
+                      className="w-full p-4 flex items-center justify-between hover:bg-white/5 transition-all"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${subject.color} flex items-center justify-center`}>
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-white font-semibold">{subject.name}</div>
+                          <div className="text-gray-400 text-sm">
+                            {completedCount} / {totalCount} compétences
+                          </div>
+                        </div>
+                      </div>
+                      {isExpanded ? (
+                        <ChevronUp className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                      )}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-4 pb-4 space-y-3">
+                        {subject.competencies.map((competency, idx) => (
+                          <div
+                            key={competency.id}
+                            className="bg-white/5 rounded-lg p-4 border border-white/10"
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div className="mt-1">
+                                <div className="w-5 h-5 rounded border-2 border-gray-400 flex items-center justify-center flex-shrink-0">
+                                  {/* Checkbox - can be made interactive later */}
+                                </div>
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-white font-semibold mb-1">
+                                  {competency.name}
+                                </div>
+                                <div className="text-gray-400 text-sm mb-2 italic">
+                                  {competency.description}
+                                </div>
+                                {competency.skills && competency.skills.length > 0 && (
+                                  <div className="mt-3 space-y-1">
+                                    <div className="text-xs text-gray-500 font-semibold uppercase mb-2">
+                                      Habiletés / Skills:
+                                    </div>
+                                    <ul className="space-y-1">
+                                      {competency.skills.map((skill, skillIdx) => (
+                                        <li key={skillIdx} className="text-xs text-gray-400 flex items-start space-x-2">
+                                          <span className="text-purple-400 mt-1">•</span>
+                                          <span>{skill}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
