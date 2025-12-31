@@ -1,12 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Calculator, Trophy, User, LogOut, Settings } from 'lucide-react';
+import { Home, BookOpen, Calculator, Trophy, User, LogOut, Settings, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useSupabase } from '../context/SupabaseContext';
+import { useAdmin } from '../context/AdminContext';
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const { user } = useApp();
   const { signOut } = useSupabase();
+  const { isAdmin } = useAdmin();
 
   const handleSignOut = async () => {
     try {
@@ -67,6 +69,19 @@ const Layout = ({ children }) => {
                   <BookOpen className="w-4 h-4" />
                   <span>Curriculum</span>
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                      location.pathname.startsWith('/admin')
+                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
+                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
               </div>
             </div>
 

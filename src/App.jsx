@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { SupabaseProvider, useSupabase } from './context/SupabaseContext';
 import { AppProvider } from './context/AppContext';
+import { AdminProvider } from './context/AdminContext';
 import Dashboard from './pages/Dashboard';
 import HistoryOverview from './pages/history/HistoryOverview';
 import HistoryLesson from './pages/history/HistoryLesson';
@@ -14,6 +15,8 @@ import PasswordReset from './components/PasswordReset';
 import Landing from './pages/Landing';
 import Settings from './pages/Settings';
 import ResetPasswordConfirm from './pages/ResetPasswordConfirm';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import LessonManager from './pages/admin/LessonManager';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -32,13 +35,33 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/auth" replace />;
 };
 
+// Admin protected route component
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useSupabase();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-white text-xl">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <ErrorBoundary>
       <SupabaseProvider>
-        <AppProvider>
-          <Router>
-            <Routes>
+        <AdminProvider>
+          <AppProvider>
+            <Router>
+              <Routes>
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
@@ -136,11 +159,35 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Admin routes */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <Layout>
+                    <AdminDashboard />
+                  </Layout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/lessons"
+              element={
+                <AdminRoute>
+                  <Layout>
+                    <LessonManager />
+                  </Layout>
+                </AdminRoute>
+              }
+            />
+            
             {/* Catch-all route - redirect to landing */}
             <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Router>
-        </AppProvider>
+              </Routes>
+            </Router>
+          </AppProvider>
+        </AdminProvider>
       </SupabaseProvider>
     </ErrorBoundary>
   );
