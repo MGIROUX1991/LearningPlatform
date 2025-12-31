@@ -120,12 +120,13 @@ export const AppProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      await progressService.completeChapter(user.id, subject, chapterId);
+      const updatedProgress = await progressService.completeChapter(user.id, subject, chapterId);
       setProgress((prev) => ({
         ...prev,
         [subject]: {
           ...prev[subject],
           completedChapters: [...(prev[subject]?.completedChapters || []), chapterId],
+          unlockedChapters: updatedProgress?.unlocked_chapters || prev[subject]?.unlockedChapters || [],
         },
       }));
     } catch (error) {

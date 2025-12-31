@@ -11,35 +11,35 @@ const HistoryOverview = () => {
       title: 'Les Grands Explorateurs',
       description: 'Découvrez les premiers explorateurs européens qui ont navigué vers le Nouveau Monde',
       year: '1497-1534',
-      unlocked: true,
+      unlocked: true, // First chapter is always unlocked
     },
     {
       id: 'chapter2',
       title: 'La Traversée',
       description: 'Vivez l\'expérience de la traversée de l\'Atlantique',
       year: '1534-1608',
-      unlocked: progress.history?.completedChapters?.includes('chapter1'),
+      unlocked: progress.history?.unlockedChapters?.includes('chapter2') || progress.history?.completedChapters?.includes('chapter1'),
     },
     {
       id: 'chapter3',
       title: 'Fondation de Québec',
       description: 'Suivez la création de la première colonie permanente',
       year: '1608',
-      unlocked: progress.history?.completedChapters?.includes('chapter2'),
+      unlocked: progress.history?.unlockedChapters?.includes('chapter3') || progress.history?.completedChapters?.includes('chapter2'),
     },
     {
       id: 'chapter4',
       title: 'La Vie Quotidienne',
       description: 'Explorez la vie des colons en Nouvelle-France',
       year: '1608-1663',
-      unlocked: progress.history?.completedChapters?.includes('chapter3'),
+      unlocked: progress.history?.unlockedChapters?.includes('chapter4') || progress.history?.completedChapters?.includes('chapter3'),
     },
     {
       id: 'chapter5',
       title: 'Relations avec les Autochtones',
       description: 'Comprenez les interactions entre colons et peuples autochtones',
       year: '1608-1760',
-      unlocked: progress.history?.completedChapters?.includes('chapter4'),
+      unlocked: progress.history?.unlockedChapters?.includes('chapter5') || progress.history?.completedChapters?.includes('chapter4'),
     },
   ];
 

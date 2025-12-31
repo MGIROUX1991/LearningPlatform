@@ -87,9 +87,22 @@ export const progressService = {
   async completeChapter(userId, subjectId, chapterId) {
     const progress = await this.getProgress(userId, subjectId);
     const completedChapters = [...(progress.completed_chapters || []), chapterId];
+    
+    // Unlock the next chapter
+    const chapterOrder = ['chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5'];
+    const currentIndex = chapterOrder.indexOf(chapterId);
+    const nextChapterId = currentIndex >= 0 && currentIndex < chapterOrder.length - 1 
+      ? chapterOrder[currentIndex + 1] 
+      : null;
+    
+    const unlockedChapters = [...(progress.unlocked_chapters || [])];
+    if (nextChapterId && !unlockedChapters.includes(nextChapterId)) {
+      unlockedChapters.push(nextChapterId);
+    }
 
     return await this.updateProgress(userId, subjectId, {
       completed_chapters: completedChapters,
+      unlocked_chapters: unlockedChapters,
     });
   },
 
