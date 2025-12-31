@@ -112,9 +112,10 @@ const LessonManager = () => {
                 setSelectedChapter('');
               }}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              style={{ color: '#ffffff' }}
             >
               {subjects.map((subject) => (
-                <option key={subject.id} value={subject.id}>
+                <option key={subject.id} value={subject.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
                   {subject.name}
                 </option>
               ))}
@@ -127,10 +128,11 @@ const LessonManager = () => {
                 value={selectedChapter}
                 onChange={(e) => setSelectedChapter(e.target.value)}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                style={{ color: '#ffffff' }}
               >
-                <option value="">Tous les chapitres</option>
+                <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Tous les chapitres</option>
                 {historyChapters.map((chapter) => (
-                  <option key={chapter.id} value={chapter.id}>
+                  <option key={chapter.id} value={chapter.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
                     {chapter.name}
                   </option>
                 ))}
@@ -318,13 +320,14 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               value={formData.subject_id}
               onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              style={{ color: '#ffffff' }}
               required
             >
-              <option value="history">Histoire</option>
-              <option value="math">Mathématiques</option>
-              <option value="french">Français</option>
-              <option value="english">English</option>
-              <option value="science">Sciences</option>
+              <option value="history" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Histoire</option>
+              <option value="math" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Mathématiques</option>
+              <option value="french" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Français</option>
+              <option value="english" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>English</option>
+              <option value="science" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Sciences</option>
             </select>
           </div>
 
@@ -335,10 +338,11 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
                 value={formData.chapter_id}
                 onChange={(e) => setFormData({ ...formData, chapter_id: e.target.value })}
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                style={{ color: '#ffffff' }}
                 required
               >
                 {historyChapters.map((chapter) => (
-                  <option key={chapter.id} value={chapter.id}>
+                  <option key={chapter.id} value={chapter.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
                     {chapter.name}
                   </option>
                 ))}
