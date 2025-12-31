@@ -225,6 +225,7 @@ export const SupabaseProvider = ({ children }) => {
     addXP,
     updateStreak,
     XP_PER_LEVEL,
+    supabase, // Export supabase for password reset
   };
 
   return (

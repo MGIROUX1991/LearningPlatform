@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSupabase } from '../context/SupabaseContext';
 import { Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
 
@@ -152,19 +152,27 @@ const Auth = () => {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 space-y-3 text-center">
           <button
             onClick={() => {
               setIsSignUp(!isSignUp);
               setError(null);
               setMessage(null);
             }}
-            className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
+            className="text-purple-400 hover:text-purple-300 text-sm transition-colors block w-full"
           >
             {isSignUp
               ? 'Déjà un compte? Se connecter'
               : 'Pas de compte? Créer un compte'}
           </button>
+          {!isSignUp && (
+            <Link
+              to="/auth/reset-password"
+              className="text-purple-400 hover:text-purple-300 text-sm transition-colors block"
+            >
+              Mot de passe oublié?
+            </Link>
+          )}
         </div>
       </div>
     </div>

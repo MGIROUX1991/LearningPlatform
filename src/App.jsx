@@ -10,7 +10,10 @@ import MathSkillTree from './pages/math/MathSkillTree';
 import MathProblemSolver from './pages/math/MathProblemSolver';
 import CurriculumOverview from './components/CurriculumOverview';
 import Auth from './components/Auth';
+import PasswordReset from './components/PasswordReset';
 import Landing from './pages/Landing';
+import Settings from './pages/Settings';
+import ResetPasswordConfirm from './pages/ResetPasswordConfirm';
 import Layout from './components/Layout';
 
 // Protected route component
@@ -37,6 +40,8 @@ function App() {
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/auth/reset-password" element={<PasswordReset />} />
+            <Route path="/auth/reset-password-confirm" element={<ResetPasswordConfirm />} />
             
             {/* Protected routes */}
             <Route
@@ -115,6 +120,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <CurriculumOverview />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Settings />
                   </Layout>
                 </ProtectedRoute>
               }

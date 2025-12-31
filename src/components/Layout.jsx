@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, Calculator, Trophy, User, LogOut } from 'lucide-react';
+import { Home, BookOpen, Calculator, Trophy, User, LogOut, Settings } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useSupabase } from '../context/SupabaseContext';
 
@@ -83,6 +83,18 @@ const Layout = ({ children }) => {
                   <User className="w-4 h-4 text-blue-400" />
                   <span className="text-white">{user.name}</span>
                 </div>
+
+                <Link
+                  to="/settings"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                    location.pathname === '/settings'
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white'
+                  }`}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span className="hidden sm:inline">Paramètres</span>
+                </Link>
                 
                 <button
                   onClick={handleSignOut}
