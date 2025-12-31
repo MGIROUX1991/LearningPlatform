@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
 
 const ResetPasswordConfirm = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -13,14 +12,51 @@ const ResetPasswordConfirm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    // Check if we have the hash in URL (from email link)
-    const hash = searchParams.get('hash');
-    if (!hash) {
-      setError('Lien de réinitialisation invalide ou expiré');
-    }
-  }, [searchParams]);
+    // Supabase password reset uses URL hash fragments (#access_token=...&type=recovery)
+    // Supabase automatically processes these when getSession() is called
+    const checkRecoverySession = async () => {
+      try {
+        // Wait a moment for Supabase to process the URL hash
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Get the session - Supabase will have processed the hash by now
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          setError('Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.');
+          setInitializing(false);
+          return;
+        }
+
+        // Check URL hash for recovery type
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const type = hashParams.get('type');
+        
+        if (type === 'recovery') {
+          // This is a password reset link - we can proceed
+          setInitializing(false);
+        } else if (session) {
+          // We have a session but it's not a recovery type
+          // This might be a regular session, allow password change anyway
+          setInitializing(false);
+        } else {
+          // No session and no recovery type - link might be invalid
+          setError('Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.');
+          setInitializing(false);
+        }
+      } catch (err) {
+        console.error('Error checking recovery session:', err);
+        setError('Erreur lors de la vérification du lien. Veuillez réessayer.');
+        setInitializing(false);
+      }
+    };
+
+    checkRecoverySession();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +93,9 @@ const ResetPasswordConfirm = () => {
     }
   };
 
+  // Show form even if initializing - user can still try to submit
+  // The form will handle validation
+
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -85,10 +124,26 @@ const ResetPasswordConfirm = () => {
           <h1 className="text-3xl font-bold text-white mb-2">
             Nouveau mot de passe
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-400 mb-2">
             Entrez votre nouveau mot de passe
           </p>
+          {initializing && (
+            <p className="text-blue-400 text-sm">
+              Vérification du lien en cours...
+            </p>
+          )}
+          {error && error.includes('invalide') && (
+            <p className="text-yellow-400 text-sm">
+              Si vous êtes arrivé ici directement, veuillez utiliser le lien envoyé par email.
+            </p>
+          )}
         </div>
+
+        {error && !error.includes('invalide') && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-300 text-sm mb-6">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -144,9 +199,15 @@ const ResetPasswordConfirm = () => {
             )}
           </div>
 
-          {error && (
-            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-300 text-sm">
-              {error}
+          {error && error.includes('invalide') && (
+            <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4 text-yellow-300 text-sm">
+              <p className="mb-2">{error}</p>
+              <a 
+                href="/auth/reset-password" 
+                className="text-purple-400 hover:text-purple-300 underline text-sm"
+              >
+                Demander un nouveau lien de réinitialisation
+              </a>
             </div>
           )}
 
