@@ -15,7 +15,8 @@ export const progressService = {
       return null;
     }
 
-    return data || {
+    // Return default progress structure
+    const defaultProgress = {
       subject_id: subjectId,
       completed_chapters: [],
       completed_lessons: {},
@@ -24,6 +25,18 @@ export const progressService = {
       completed_skills: [],
       practice_problems: {},
     };
+    
+    // If no data exists, ensure we have the default structure
+    if (!data) {
+      return defaultProgress;
+    }
+    
+    // Ensure unlocked_chapters exists and includes chapter1 for history
+    if (subjectId === 'history' && (!data.unlocked_chapters || data.unlocked_chapters.length === 0)) {
+      data.unlocked_chapters = ['chapter1'];
+    }
+    
+    return data;
   },
 
   async getAllProgress(userId) {
@@ -46,10 +59,20 @@ export const progressService = {
       const progressMap = {};
       if (data) {
         data.forEach((item) => {
+          // Ensure unlocked_chapters is properly initialized for history
+          let unlockedChapters = item.unlocked_chapters || [];
+          if (item.subject_id === 'history') {
+            if (unlockedChapters.length === 0) {
+              unlockedChapters = ['chapter1'];
+            } else if (!unlockedChapters.includes('chapter1')) {
+              unlockedChapters = ['chapter1', ...unlockedChapters.filter(c => c !== 'chapter1')];
+            }
+          }
+          
           progressMap[item.subject_id] = {
             completedChapters: item.completed_chapters || [],
             completedLessons: item.completed_lessons || {},
-            unlockedChapters: item.unlocked_chapters || [],
+            unlockedChapters: unlockedChapters,
             unlockedSkills: item.unlocked_skills || [],
             completedSkills: item.completed_skills || [],
             practiceProblems: item.practice_problems || {},
@@ -86,7 +109,15 @@ export const progressService = {
 
   async completeChapter(userId, subjectId, chapterId) {
     const progress = await this.getProgress(userId, subjectId);
-    const completedChapters = [...(progress.completed_chapters || []), chapterId];
+    
+    // Ensure we don't duplicate completed chapters
+    const completedChapters = progress.completed_chapters || [];
+    if (completedChapters.includes(chapterId)) {
+      // Already completed, return current progress
+      return progress;
+    }
+    
+    const newCompletedChapters = [...completedChapters, chapterId];
     
     // Unlock the next chapter
     const chapterOrder = ['chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5'];
@@ -95,15 +126,25 @@ export const progressService = {
       ? chapterOrder[currentIndex + 1] 
       : null;
     
-    const unlockedChapters = [...(progress.unlocked_chapters || [])];
+    // Initialize unlocked_chapters properly
+    let unlockedChapters = progress.unlocked_chapters || [];
+    
+    // For history, ensure chapter1 is always unlocked if no progress exists
+    if (subjectId === 'history' && unlockedChapters.length === 0) {
+      unlockedChapters = ['chapter1'];
+    }
+    
+    // Add next chapter if it exists and isn't already unlocked
     if (nextChapterId && !unlockedChapters.includes(nextChapterId)) {
-      unlockedChapters.push(nextChapterId);
+      unlockedChapters = [...unlockedChapters, nextChapterId];
     }
 
-    return await this.updateProgress(userId, subjectId, {
-      completed_chapters: completedChapters,
+    const updated = await this.updateProgress(userId, subjectId, {
+      completed_chapters: newCompletedChapters,
       unlocked_chapters: unlockedChapters,
     });
+    
+    return updated;
   },
 
   async completeLesson(userId, subjectId, lessonId) {

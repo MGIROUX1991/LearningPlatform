@@ -294,12 +294,15 @@ const HistoryLesson = () => {
     }
   };
 
-  const handleComplete = () => {
-    completeLesson('history', `${chapterId}-lesson`);
-    completeChapter('history', chapterId);
+  const handleComplete = async () => {
+    await completeLesson('history', `${chapterId}-lesson`);
+    await completeChapter('history', chapterId);
     addXP(100);
     completeQuest(3); // Complete "Explorer l'histoire" quest
-    navigate('/history');
+    // Small delay to ensure state updates before navigation
+    setTimeout(() => {
+      navigate('/history');
+    }, 100);
   };
 
   const currentPageData = lesson.pages[currentPage];

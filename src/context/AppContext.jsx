@@ -121,16 +121,15 @@ export const AppProvider = ({ children }) => {
 
     try {
       const updatedProgress = await progressService.completeChapter(user.id, subject, chapterId);
-      setProgress((prev) => ({
-        ...prev,
-        [subject]: {
-          ...prev[subject],
-          completedChapters: [...(prev[subject]?.completedChapters || []), chapterId],
-          unlockedChapters: updatedProgress?.unlocked_chapters || prev[subject]?.unlockedChapters || [],
-        },
-      }));
+      
+      // Reload all progress to ensure we have the latest data
+      const allProgress = await progressService.getAllProgress(user.id);
+      setProgress(allProgress);
+      
+      return updatedProgress;
     } catch (error) {
       console.error('Error completing chapter:', error);
+      throw error;
     }
   };
 
