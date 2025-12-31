@@ -114,7 +114,7 @@ const HistoryLesson = () => {
     <div className="max-w-4xl mx-auto">
       <Link
         to="/history"
-        className="inline-flex items-center space-x-2 text-purple-300 hover:text-purple-200 mb-6"
+        className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Retour à l'Histoire</span>
@@ -222,7 +222,7 @@ const HistoryLesson = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-purple-500/20">
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-blue-500/20">
           <h2 className="text-3xl font-bold text-white mb-8 text-center">Quiz de révision</h2>
           
           <div className="space-y-6">
@@ -250,7 +250,7 @@ const HistoryLesson = () => {
                             showCorrect
                               ? 'bg-green-500/20 border-green-500'
                               : isSelected && !quizCompleted
-                              ? 'bg-purple-500/20 border-purple-500'
+                              ? 'bg-blue-500/20 border-blue-500'
                               : isSelected && quizCompleted && !isCorrect
                               ? 'bg-red-500/20 border-red-500'
                               : 'bg-white/5 border-white/10 hover:border-white/20'
@@ -282,7 +282,7 @@ const HistoryLesson = () => {
               <button
                 onClick={handleCompleteQuiz}
                 disabled={!lesson.quiz.questions.every(q => quizAnswers[q.id] !== undefined)}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
               >
                 Soumettre les réponses
               </button>

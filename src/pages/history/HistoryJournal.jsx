@@ -105,7 +105,7 @@ const HistoryJournal = () => {
     <div className="max-w-4xl mx-auto">
       <Link
         to="/history"
-        className="inline-flex items-center space-x-2 text-purple-300 hover:text-purple-200 mb-6"
+        className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Retour à l'Histoire</span>
@@ -156,7 +156,7 @@ const HistoryJournal = () => {
 
         {/* Decision Making */}
         {currentDecision && (
-          <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-6 border-2 border-purple-500/50">
+          <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 backdrop-blur-md rounded-2xl p-6 border-2 border-blue-500/50">
             <h3 className="text-xl font-bold text-white mb-4">{currentDecision.question}</h3>
             <div className="space-y-3">
               {currentDecision.options.map((option, index) => (

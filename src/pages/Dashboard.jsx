@@ -10,7 +10,7 @@ const Dashboard = () => {
   // Show loading state if user data is not ready
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="text-white text-xl">Chargement...</div>
       </div>
     );
@@ -70,7 +70,7 @@ const Dashboard = () => {
       case 'health':
         return 'from-red-500 to-orange-600';
       case 'practical':
-        return 'from-purple-500 to-violet-600';
+        return 'from-blue-500 to-cyan-600';
       default:
         return 'from-gray-500 to-slate-600';
     }
@@ -117,7 +117,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Hero Stats Section */}
-      <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-8 border border-purple-500/30">
+      <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 backdrop-blur-md rounded-2xl p-8 border border-blue-500/30">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
             <div className="flex items-center justify-between mb-4">
@@ -159,9 +159,9 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Daily Quests */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
             <div className="flex items-center space-x-2 mb-6">
-              <Target className="w-6 h-6 text-purple-400" />
+              <Target className="w-6 h-6 text-blue-400" />
               <h2 className="text-2xl font-bold text-white">Quêtes quotidiennes</h2>
             </div>
             <div className="space-y-4">
@@ -201,7 +201,7 @@ const Dashboard = () => {
           </div>
 
           {/* Weekly Challenge */}
-          <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-6 border border-purple-500/30">
+          <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 backdrop-blur-md rounded-2xl p-6 border border-blue-500/30">
             <div className="flex items-center space-x-2 mb-4">
               <Award className="w-6 h-6 text-yellow-400" />
               <h2 className="text-2xl font-bold text-white">Défi hebdomadaire</h2>
@@ -219,7 +219,7 @@ const Dashboard = () => {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full flex-1 mx-4">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                    className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
                     style={{
                       width: `${Math.min(
                         ((progress.history?.completedChapters?.length || 0) / 3) * 100,
@@ -234,7 +234,7 @@ const Dashboard = () => {
           </div>
 
           {/* Competency Checklist */}
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
             <div className="flex items-center space-x-2 mb-6">
               <CheckCircle className="w-6 h-6 text-green-400" />
               <h2 className="text-2xl font-bold text-white">Compétences par matière</h2>
@@ -301,7 +301,7 @@ const Dashboard = () => {
                                     <ul className="space-y-1">
                                       {competency.skills.map((skill, skillIdx) => (
                                         <li key={skillIdx} className="text-xs text-gray-400 flex items-start space-x-2">
-                                          <span className="text-purple-400 mt-1">•</span>
+                                          <span className="text-blue-400 mt-1">•</span>
                                           <span>{skill}</span>
                                         </li>
                                       ))}
@@ -324,7 +324,7 @@ const Dashboard = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Subject Progress Cards */}
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
             <h2 className="text-2xl font-bold text-white mb-6">Matières</h2>
             <div className="space-y-4">
               {mainSubjects.map((subject) => {
@@ -360,7 +360,7 @@ const Dashboard = () => {
 
           {/* Recent Achievements */}
           {recentAchievements.length > 0 && (
-            <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+            <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
               <h2 className="text-2xl font-bold text-white mb-6">Réalisations récentes</h2>
               <div className="space-y-3">
                 {recentAchievements.map((achievement) => (

@@ -31,3 +31,7 @@ yarn-error.log*
 
 # Vite
 .vite/
+QUICK_ADMIN_FIX.sql
+FIX_RLS_500_ERROR.sql
+supabase/migrations/003_admin_and_content.sql
+supabase/migrations/003_admin_and_content.sql

@@ -87,7 +87,7 @@ const ChangePassword = ({ onSuccess, onCancel }) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
       <h2 className="text-2xl font-bold text-white mb-6">Changer le mot de passe</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,7 +101,7 @@ const ChangePassword = ({ onSuccess, onCancel }) => {
               type={showCurrent ? 'text' : 'password'}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
+              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all"
               placeholder="Entrez votre mot de passe actuel"
               required
             />
@@ -125,7 +125,7 @@ const ChangePassword = ({ onSuccess, onCancel }) => {
               type={showNew ? 'text' : 'password'}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
+              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all"
               placeholder="Au moins 6 caractères"
               required
               minLength={6}
@@ -150,7 +150,7 @@ const ChangePassword = ({ onSuccess, onCancel }) => {
               type={showConfirm ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
+              className="w-full pl-10 pr-10 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all"
               placeholder="Confirmez votre nouveau mot de passe"
               required
               minLength={6}
@@ -181,7 +181,7 @@ const ChangePassword = ({ onSuccess, onCancel }) => {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {loading ? 'Modification...' : 'Modifier le mot de passe'}
           </button>

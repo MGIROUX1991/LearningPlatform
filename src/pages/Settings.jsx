@@ -36,9 +36,9 @@ const Settings = () => {
       </div>
 
       {/* Profile Information */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
         <div className="flex items-center space-x-2 mb-6">
-          <User className="w-6 h-6 text-purple-400" />
+          <User className="w-6 h-6 text-blue-400" />
           <h2 className="text-2xl font-bold text-white">Informations du profil</h2>
         </div>
 
@@ -68,13 +68,13 @@ const Settings = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-all"
+                className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all"
                 placeholder="Votre nom"
               />
               <button
                 onClick={handleSaveName}
                 disabled={saving || !name.trim() || name === profile?.name}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {saving ? 'Enregistrement...' : 'Enregistrer'}
               </button>
@@ -89,10 +89,10 @@ const Settings = () => {
       </div>
 
       {/* Password Section */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-2">
-            <Lock className="w-6 h-6 text-purple-400" />
+            <Lock className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl font-bold text-white">Sécurité</h2>
           </div>
           {!showChangePassword && (
@@ -120,7 +120,7 @@ const Settings = () => {
       </div>
 
       {/* Admin Debug Section */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
         <h2 className="text-2xl font-bold text-white mb-4">Debug Admin Status</h2>
         <AdminDebug />
       </div>

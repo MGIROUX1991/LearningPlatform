@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="max-w-md w-full bg-gradient-to-br from-red-900/40 to-orange-900/40 backdrop-blur-md rounded-2xl p-8 border border-red-500/20 shadow-2xl text-center">
           <h1 className="text-3xl font-bold text-white mb-4">Accès refusé</h1>
           <p className="text-gray-300">
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
       name: 'Analytiques',
       description: 'Statistiques et rapports',
       icon: BarChart3,
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-blue-500 to-cyan-600',
       path: '/admin/analytics',
     },
     {

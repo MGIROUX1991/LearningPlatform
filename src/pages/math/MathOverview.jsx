@@ -73,7 +73,7 @@ const MathOverview = () => {
       </div>
 
       {/* Curriculum Info */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-blue-500/20">
         <h2 className="text-2xl font-bold text-white mb-4">Programme Québécois</h2>
         <p className="text-gray-300 mb-6">
           Ce module couvre les concepts mathématiques du programme de formation de l'école québécoise

@@ -53,7 +53,7 @@ const LessonManager = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="max-w-md w-full bg-gradient-to-br from-red-900/40 to-orange-900/40 backdrop-blur-md rounded-2xl p-8 border border-red-500/20 shadow-2xl text-center">
           <h1 className="text-3xl font-bold text-white mb-4">Accès refusé</h1>
           <p className="text-gray-300">Vous n'avez pas les permissions nécessaires.</p>
@@ -80,7 +80,7 @@ const LessonManager = () => {
         <div>
           <Link
             to="/admin"
-            className="inline-flex items-center space-x-2 text-purple-300 hover:text-purple-200 mb-4"
+            className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Retour au tableau de bord</span>
@@ -93,7 +93,7 @@ const LessonManager = () => {
             setEditingLesson(null);
             setShowForm(true);
           }}
-          className="flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all font-semibold"
+          className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-semibold"
         >
           <Plus className="w-5 h-5" />
           <span>Nouvelle leçon</span>
@@ -101,7 +101,7 @@ const LessonManager = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-gray-300 text-sm font-medium mb-2">Matière</label>
@@ -111,7 +111,7 @@ const LessonManager = () => {
                 setSelectedSubject(e.target.value);
                 setSelectedChapter('');
               }}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
             >
               {subjects.map((subject) => (
                 <option key={subject.id} value={subject.id}>
@@ -126,7 +126,7 @@ const LessonManager = () => {
               <select
                 value={selectedChapter}
                 onChange={(e) => setSelectedChapter(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="">Tous les chapitres</option>
                 {historyChapters.map((chapter) => (
@@ -157,7 +157,7 @@ const LessonManager = () => {
           }}
         />
       ) : (
-        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
           {loading ? (
             <div className="text-center text-gray-400 py-8">Chargement...</div>
           ) : lessons.length === 0 ? (
@@ -166,7 +166,7 @@ const LessonManager = () => {
               <p className="text-gray-400 mb-4">Aucune leçon trouvée</p>
               <button
                 onClick={() => setShowForm(true)}
-                className="text-purple-400 hover:text-purple-300"
+                className="text-blue-400 hover:text-blue-300"
               >
                 Créer la première leçon
               </button>
@@ -182,7 +182,7 @@ const LessonManager = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-xl font-bold text-white">{lesson.title}</h3>
-                        <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">
+                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded">
                           Leçon {lesson.lesson_number}
                         </span>
                       </div>
@@ -305,7 +305,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
       <h2 className="text-2xl font-bold text-white mb-6">
         {lesson ? 'Modifier la leçon' : 'Nouvelle leçon'}
       </h2>
@@ -317,7 +317,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
             <select
               value={formData.subject_id}
               onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               required
             >
               <option value="history">Histoire</option>
@@ -334,7 +334,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               <select
                 value={formData.chapter_id}
                 onChange={(e) => setFormData({ ...formData, chapter_id: e.target.value })}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
                 required
               >
                 {historyChapters.map((chapter) => (
@@ -352,7 +352,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               type="number"
               value={formData.lesson_number}
               onChange={(e) => setFormData({ ...formData, lesson_number: parseInt(e.target.value) })}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               required
               min="1"
             />
@@ -364,7 +364,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               type="number"
               value={formData.xp_reward}
               onChange={(e) => setFormData({ ...formData, xp_reward: parseInt(e.target.value) })}
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               required
               min="0"
             />
@@ -377,7 +377,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
             type="text"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
             required
             placeholder="Titre de la leçon"
           />
@@ -388,7 +388,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
           <textarea
             value={formData.content}
             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 min-h-[200px]"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[200px]"
             required
             placeholder="Contenu de la leçon..."
           />
@@ -401,7 +401,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
           <textarea
             value={formData.fun_fact}
             onChange={(e) => setFormData({ ...formData, fun_fact: e.target.value })}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-purple-500 min-h-[80px]"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500 min-h-[80px]"
             placeholder="Fait amusant à afficher..."
           />
         </div>
@@ -412,7 +412,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
             <button
               type="button"
               onClick={addVocabularyTerm}
-              className="text-sm text-purple-400 hover:text-purple-300"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               + Ajouter un terme
             </button>
@@ -452,7 +452,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
             <button
               type="button"
               onClick={addQuizQuestion}
-              className="text-sm text-purple-400 hover:text-purple-300"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               + Ajouter une question
             </button>
@@ -507,7 +507,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+            className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
           >
             {saving ? 'Enregistrement...' : lesson ? 'Mettre à jour' : 'Créer la leçon'}
           </button>

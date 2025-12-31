@@ -32,7 +32,7 @@ const CurriculumOverview = () => {
     <div className="space-y-8">
       <div className="text-center mb-8">
         <div className="flex items-center justify-center space-x-3 mb-4">
-          <GraduationCap className="w-8 h-8 text-purple-400" />
+          <GraduationCap className="w-8 h-8 text-blue-400" />
           <h1 className="text-4xl font-bold text-white">
             Programme de Formation Québécois
           </h1>
@@ -43,7 +43,7 @@ const CurriculumOverview = () => {
       </div>
 
       {/* Year Selector */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
         <h2 className="text-xl font-bold text-white mb-4">Sélectionner une année</h2>
         <div className="grid grid-cols-5 gap-3">
           {years.map((year) => {
@@ -57,7 +57,7 @@ const CurriculumOverview = () => {
                 }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedYear === year
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 border-purple-400 text-white'
+                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 border-blue-400 text-white'
                     : isCycleOne
                     ? 'bg-blue-600/20 border-blue-500/50 text-white hover:bg-blue-600/30'
                     : 'bg-green-600/20 border-green-500/50 text-white hover:bg-green-600/30'
@@ -74,7 +74,7 @@ const CurriculumOverview = () => {
       </div>
 
       {/* Mandatory Subjects */}
-      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
           <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-white">
             Matières obligatoires - {selectedYear}
@@ -100,7 +100,7 @@ const CurriculumOverview = () => {
                 onClick={() => setSelectedSubject(selectedSubject?.id === subject.id ? null : subject)}
                 className={`bg-white/5 hover:bg-white/10 rounded-xl p-6 border-2 cursor-pointer transition-all ${
                   selectedSubject?.id === subject.id
-                    ? 'border-purple-400 bg-purple-500/20'
+                    ? 'border-blue-400 bg-blue-500/20'
                     : 'border-white/10 hover:border-white/20'
                 }`}
               >

@@ -109,7 +109,7 @@ const MathProblemSolver = () => {
     <div className="max-w-4xl mx-auto">
       <Link
         to="/math/skills"
-        className="inline-flex items-center space-x-2 text-purple-300 hover:text-purple-200 mb-6"
+        className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Retour aux compétences</span>
@@ -121,7 +121,7 @@ const MathProblemSolver = () => {
           <span className="text-white font-semibold">
             Problème {currentProblem + 1} sur {problems.length}
           </span>
-          <span className="text-purple-300 font-semibold">
+          <span className="text-blue-300 font-semibold">
             Score: {score} / {problems.length}
           </span>
         </div>

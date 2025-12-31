@@ -21,7 +21,7 @@ const Landing = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="text-white text-xl">Chargement...</div>
       </div>
     );
@@ -49,7 +49,7 @@ const Landing = () => {
       icon: Target,
       title: 'Daily Quests',
       description: 'Complete daily challenges to maintain your learning streak',
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-blue-500 to-pink-600',
     },
     {
       icon: Zap,
@@ -94,7 +94,7 @@ const Landing = () => {
       name: 'Sciences',
       description: 'Explore scientific concepts through hands-on activities',
       icon: Globe,
-      color: 'from-purple-500 to-violet-600',
+      color: 'from-blue-500 to-cyan-600',
     },
   ];
 
@@ -106,20 +106,20 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Navigation */}
-      <nav className="bg-black/30 backdrop-blur-md border-b border-purple-500/20">
+      <nav className="bg-black/30 backdrop-blur-md border-b border-blue-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <span className="text-white font-bold text-lg">Québec Apprentissage</span>
             </div>
             <Link
               to="/auth"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all font-semibold"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-semibold"
             >
               Commencer
             </Link>
@@ -133,17 +133,17 @@ const Landing = () => {
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
               Apprenez avec
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> style</span>
+              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> style</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Plateforme d'apprentissage gamifiée pour les élèves à la maison
               <br />
-              <span className="text-purple-300">Secondaire 1-5 • Programme Québécois</span>
+              <span className="text-blue-300">Secondaire 1-5 • Programme Québécois</span>
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 to="/auth"
-                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all font-semibold text-lg flex items-center space-x-2 shadow-lg shadow-purple-500/50"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-semibold text-lg flex items-center space-x-2 shadow-lg shadow-blue-500/50"
               >
                 <span>Créer un compte gratuit</span>
                 <ArrowRight className="w-5 h-5" />
@@ -182,8 +182,8 @@ const Landing = () => {
               return (
                 <div key={index} className="text-center">
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center">
-                      <Icon className="w-8 h-8 text-purple-400" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center">
+                      <Icon className="w-8 h-8 text-blue-400" />
                     </div>
                   </div>
                   <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
@@ -212,7 +212,7 @@ const Landing = () => {
               return (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all"
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/40 transition-all"
                 >
                   <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-4`}>
                     <Icon className="w-6 h-6 text-white" />
@@ -243,7 +243,7 @@ const Landing = () => {
               return (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-purple-500/20 hover:border-purple-500/40 transition-all"
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-blue-500/20 hover:border-blue-500/40 transition-all"
                 >
                   <div className="flex items-start space-x-4">
                     <div className={`w-16 h-16 bg-gradient-to-br ${subject.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
@@ -271,7 +271,7 @@ const Landing = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-white">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold text-white">
                 1
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Créez votre compte</h3>
@@ -302,7 +302,7 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
+      <section className="py-20 bg-gradient-to-r from-blue-600/20 to-cyan-600/20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">
             Prêt à commencer votre parcours?
@@ -312,7 +312,7 @@ const Landing = () => {
           </p>
           <Link
             to="/auth"
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all font-semibold text-lg shadow-lg shadow-purple-500/50"
+            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-semibold text-lg shadow-lg shadow-blue-500/50"
           >
             <span>Créer un compte gratuit</span>
             <ArrowRight className="w-5 h-5" />
@@ -321,11 +321,11 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/30 border-t border-purple-500/20 py-12">
+      <footer className="bg-black/30 border-t border-blue-500/20 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <span className="text-white font-bold">Québec Apprentissage</span>

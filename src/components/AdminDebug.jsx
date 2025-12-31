@@ -42,7 +42,7 @@ const AdminDebug = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+    <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
       <h3 className="text-xl font-bold text-white mb-4">Admin Status Debug</h3>
       
       <div className="space-y-4">
@@ -99,7 +99,7 @@ const AdminDebug = () => {
           <button
             onClick={manualCheck}
             disabled={checking}
-            className="flex items-center space-x-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg disabled:opacity-50 transition-all"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg disabled:opacity-50 transition-all"
           >
             <RefreshCw className={`w-4 h-4 ${checking ? 'animate-spin' : ''}`} />
             <span>Manual Check</span>
