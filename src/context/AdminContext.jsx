@@ -26,7 +26,9 @@ export const AdminProvider = ({ children }) => {
       }
 
       try {
+        console.log('AdminContext: Checking admin status for user:', user.id, user.email);
         const adminStatus = await adminService.checkIsAdmin(user.id);
+        console.log('AdminContext: Admin status result:', adminStatus);
         setIsAdmin(adminStatus);
       } catch (error) {
         console.error('Error checking admin status:', error);
@@ -39,9 +41,37 @@ export const AdminProvider = ({ children }) => {
     checkAdminStatus();
   }, [user]);
 
+  // Add a refresh function that can be called manually
+  const refreshAdminStatus = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const adminStatus = await adminService.checkIsAdmin(user.id);
+      setIsAdmin(adminStatus);
+    } catch (error) {
+      console.error('Error refreshing admin status:', error);
+      setIsAdmin(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value = {
     isAdmin,
     loading,
+    refreshAdminStatus: async () => {
+      if (!user) return;
+      setLoading(true);
+      try {
+        const adminStatus = await adminService.checkIsAdmin(user.id);
+        setIsAdmin(adminStatus);
+      } catch (error) {
+        console.error('Error refreshing admin status:', error);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    },
   };
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;

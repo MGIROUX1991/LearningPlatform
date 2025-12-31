@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSupabase } from '../context/SupabaseContext';
 import ChangePassword from '../components/ChangePassword';
+import AdminDebug from '../components/AdminDebug';
 import { User, Lock, Mail } from 'lucide-react';
 
 const Settings = () => {
@@ -116,6 +117,12 @@ const Settings = () => {
             Cliquez sur "Changer le mot de passe" pour modifier votre mot de passe.
           </div>
         )}
+      </div>
+
+      {/* Admin Debug Section */}
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-purple-500/20">
+        <h2 className="text-2xl font-bold text-white mb-4">Debug Admin Status</h2>
+        <AdminDebug />
       </div>
     </div>
   );

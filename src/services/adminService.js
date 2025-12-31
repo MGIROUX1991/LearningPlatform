@@ -3,18 +3,27 @@ import { supabase } from '../lib/supabase';
 export const adminService = {
   async checkIsAdmin(userId) {
     try {
+      console.log('Checking admin status for user:', userId);
+      
       const { data, error } = await supabase
         .from('admin_users')
-        .select('id')
+        .select('id, email, role')
         .eq('id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to avoid errors
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error checking admin status:', error);
+        // If table doesn't exist, return false
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('admin_users table does not exist. Please run migration 003_admin_and_content.sql');
+          return false;
+        }
         return false;
       }
 
-      return !!data;
+      const isAdmin = !!data;
+      console.log('Admin check result:', isAdmin, data);
+      return isAdmin;
     } catch (error) {
       console.error('Error in checkIsAdmin:', error);
       return false;
