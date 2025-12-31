@@ -88,23 +88,53 @@ export const progressService = {
   },
 
   async updateProgress(userId, subjectId, updates) {
-    const { data, error } = await supabase
+    // Prepare the data - don't include updated_at as trigger handles it
+    const progressData = {
+      user_id: userId,
+      subject_id: subjectId,
+      ...updates,
+    };
+    
+    // Remove updated_at from progressData if it exists (trigger will handle it)
+    delete progressData.updated_at;
+    
+    // Try to update first (most common case)
+    const { data: updateData, error: updateError } = await supabase
       .from('subject_progress')
-      .upsert({
-        user_id: userId,
-        subject_id: subjectId,
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
+      .update(progressData)
+      .eq('user_id', userId)
+      .eq('subject_id', subjectId)
       .select()
       .single();
 
-    if (error) {
-      console.error('Error updating progress:', error);
-      throw error;
+    // If update succeeded, return the data
+    if (updateData && !updateError) {
+      return updateData;
     }
 
-    return data;
+    // If update failed because record doesn't exist (PGRST116), try insert
+    if (updateError && updateError.code === 'PGRST116') {
+      const { data: insertData, error: insertError } = await supabase
+        .from('subject_progress')
+        .insert(progressData)
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Error inserting progress:', insertError);
+        throw insertError;
+      }
+
+      return insertData;
+    }
+
+    // If update failed for another reason, throw the error
+    if (updateError) {
+      console.error('Error updating progress:', updateError);
+      throw updateError;
+    }
+
+    return updateData;
   },
 
   async completeChapter(userId, subjectId, chapterId) {
