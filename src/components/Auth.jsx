@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useSupabase } from '../context/SupabaseContext';
 import { Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
 
@@ -13,7 +13,20 @@ const Auth = () => {
   const [message, setMessage] = useState(null);
   const navigate = useNavigate();
 
-  const { signUp, signIn } = useSupabase();
+  const { signUp, signIn, user, loading: authLoading } = useSupabase();
+
+  // Redirect if already logged in
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-white text-xl">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

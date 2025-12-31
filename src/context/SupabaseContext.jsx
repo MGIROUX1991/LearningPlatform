@@ -61,13 +61,18 @@ export const SupabaseProvider = ({ children }) => {
       }
     });
 
-    // Timeout fallback - if loading takes more than 5 seconds, stop loading
+    // Timeout fallback - if loading takes more than 10 seconds, stop loading
     const timeout = setTimeout(() => {
       if (mounted) {
         console.warn('Supabase initialization timeout - continuing anyway');
         setLoading(false);
+        // If no user after timeout, ensure we're in logged-out state
+        if (!user) {
+          setUser(null);
+          setProfile(null);
+        }
       }
-    }, 5000);
+    }, 10000);
 
     return () => {
       mounted = false;

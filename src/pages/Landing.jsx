@@ -18,7 +18,7 @@ import {
 const Landing = () => {
   const { user, loading } = useSupabase();
 
-  // Redirect to dashboard if already logged in
+  // Show loading state
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -27,6 +27,8 @@ const Landing = () => {
     );
   }
 
+  // Only redirect if user is definitely logged in (not just loading)
+  // This prevents redirect loops
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }

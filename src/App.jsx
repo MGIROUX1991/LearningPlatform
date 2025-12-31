@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return user ? children : <Navigate to="/" replace />;
+  return user ? children : <Navigate to="/auth" replace />;
 };
 
 function App() {
@@ -134,6 +134,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Catch-all route - redirect to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </AppProvider>
