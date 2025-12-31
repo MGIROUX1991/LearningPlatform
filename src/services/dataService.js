@@ -27,29 +27,41 @@ export const progressService = {
   },
 
   async getAllProgress(userId) {
-    const { data, error } = await supabase
-      .from('subject_progress')
-      .select('*')
-      .eq('user_id', userId);
+    try {
+      const { data, error } = await supabase
+        .from('subject_progress')
+        .select('*')
+        .eq('user_id', userId);
 
-    if (error) {
-      console.error('Error getting all progress:', error);
+      if (error) {
+        // If table doesn't exist, return empty object
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('subject_progress table may not exist. Please run database migrations.');
+          return {};
+        }
+        console.error('Error getting all progress:', error);
+        return {};
+      }
+
+      const progressMap = {};
+      if (data) {
+        data.forEach((item) => {
+          progressMap[item.subject_id] = {
+            completedChapters: item.completed_chapters || [],
+            completedLessons: item.completed_lessons || {},
+            unlockedChapters: item.unlocked_chapters || [],
+            unlockedSkills: item.unlocked_skills || [],
+            completedSkills: item.completed_skills || [],
+            practiceProblems: item.practice_problems || {},
+          };
+        });
+      }
+
+      return progressMap;
+    } catch (error) {
+      console.error('Error in getAllProgress:', error);
       return {};
     }
-
-    const progressMap = {};
-    data.forEach((item) => {
-      progressMap[item.subject_id] = {
-        completedChapters: item.completed_chapters || [],
-        completedLessons: item.completed_lessons || {},
-        unlockedChapters: item.unlocked_chapters || [],
-        unlockedSkills: item.unlocked_skills || [],
-        completedSkills: item.completed_skills || [],
-        practiceProblems: item.practice_problems || {},
-      };
-    });
-
-    return progressMap;
   },
 
   async updateProgress(userId, subjectId, updates) {
@@ -106,24 +118,33 @@ export const progressService = {
 // Achievements service
 export const achievementService = {
   async getAchievements(userId) {
-    const { data, error } = await supabase
-      .from('achievements')
-      .select('*')
-      .eq('user_id', userId)
-      .order('unlocked_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('user_id', userId)
+        .order('unlocked_at', { ascending: false });
 
-    if (error) {
-      console.error('Error getting achievements:', error);
+      if (error) {
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('achievements table may not exist. Please run database migrations.');
+          return [];
+        }
+        console.error('Error getting achievements:', error);
+        return [];
+      }
+
+      return data ? data.map((a) => ({
+        id: a.achievement_id,
+        name: a.name,
+        description: a.description,
+        xp: a.xp_awarded,
+        unlockedAt: a.unlocked_at,
+      })) : [];
+    } catch (error) {
+      console.error('Error in getAchievements:', error);
       return [];
     }
-
-    return data.map((a) => ({
-      id: a.achievement_id,
-      name: a.name,
-      description: a.description,
-      xp: a.xp_awarded,
-      unlockedAt: a.unlocked_at,
-    }));
   },
 
   async unlockAchievement(userId, achievement) {
@@ -152,33 +173,62 @@ export const achievementService = {
 // Daily quests service
 export const questService = {
   async getDailyQuests(userId, date = null) {
-    const questDate = date || new Date().toISOString().split('T')[0];
+    try {
+      const questDate = date || new Date().toISOString().split('T')[0];
 
-    const { data, error } = await supabase
-      .from('daily_quests')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('quest_date', questDate)
-      .order('quest_id', { ascending: true });
+      const { data, error } = await supabase
+        .from('daily_quests')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('quest_date', questDate)
+        .order('quest_id', { ascending: true });
 
-    if (error) {
-      console.error('Error getting daily quests:', error);
-      return [];
+      if (error) {
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('daily_quests table may not exist. Please run database migrations.');
+          // Return default quests so app can continue
+          return [
+            { id: 1, title: 'Compléter une leçon', description: 'Terminez n\'importe quelle leçon', xp: 50, completed: false },
+            { id: 2, title: 'Maintenir votre série', description: 'Connectez-vous aujourd\'hui', xp: 25, completed: false },
+            { id: 3, title: 'Explorer l\'histoire', description: 'Lisez un chapitre d\'histoire', xp: 75, completed: false },
+          ];
+        }
+        console.error('Error getting daily quests:', error);
+        return [];
+      }
+
+      if (data && data.length === 0) {
+        // Initialize quests for today
+        try {
+          await this.initializeQuests(userId, questDate);
+          return await this.getDailyQuests(userId, questDate);
+        } catch (initError) {
+          console.error('Error initializing quests:', initError);
+          // Return default quests
+          return [
+            { id: 1, title: 'Compléter une leçon', description: 'Terminez n\'importe quelle leçon', xp: 50, completed: false },
+            { id: 2, title: 'Maintenir votre série', description: 'Connectez-vous aujourd\'hui', xp: 25, completed: false },
+            { id: 3, title: 'Explorer l\'histoire', description: 'Lisez un chapitre d\'histoire', xp: 75, completed: false },
+          ];
+        }
+      }
+
+      return data ? data.map((q) => ({
+        id: q.quest_id,
+        title: q.title,
+        description: q.description,
+        xp: q.xp,
+        completed: q.completed,
+      })) : [];
+    } catch (error) {
+      console.error('Error in getDailyQuests:', error);
+      // Return default quests so app can continue
+      return [
+        { id: 1, title: 'Compléter une leçon', description: 'Terminez n\'importe quelle leçon', xp: 50, completed: false },
+        { id: 2, title: 'Maintenir votre série', description: 'Connectez-vous aujourd\'hui', xp: 25, completed: false },
+        { id: 3, title: 'Explorer l\'histoire', description: 'Lisez un chapitre d\'histoire', xp: 75, completed: false },
+      ];
     }
-
-    if (data.length === 0) {
-      // Initialize quests for today
-      await this.initializeQuests(userId, questDate);
-      return await this.getDailyQuests(userId, questDate);
-    }
-
-    return data.map((q) => ({
-      id: q.quest_id,
-      title: q.title,
-      description: q.description,
-      xp: q.xp,
-      completed: q.completed,
-    }));
   },
 
   async initializeQuests(userId, date) {

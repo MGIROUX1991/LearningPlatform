@@ -15,6 +15,7 @@ import Landing from './pages/Landing';
 import Settings from './pages/Settings';
 import ResetPasswordConfirm from './pages/ResetPasswordConfirm';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -33,10 +34,11 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <SupabaseProvider>
-      <AppProvider>
-        <Router>
-          <Routes>
+    <ErrorBoundary>
+      <SupabaseProvider>
+        <AppProvider>
+          <Router>
+            <Routes>
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
@@ -136,10 +138,11 @@ function App() {
             />
             {/* Catch-all route - redirect to landing */}
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
-      </AppProvider>
-    </SupabaseProvider>
+            </Routes>
+          </Router>
+        </AppProvider>
+      </SupabaseProvider>
+    </ErrorBoundary>
   );
 }
 

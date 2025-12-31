@@ -33,6 +33,18 @@ export const AppProvider = ({ children }) => {
     }
   }, [user, profile]);
 
+  // Fallback: if loading takes too long, stop loading anyway
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn('AppContext loading timeout - stopping load state');
+        setLoading(false);
+      }
+    }, 15000); // 15 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
   const loadAllData = async () => {
     if (!user) return;
 

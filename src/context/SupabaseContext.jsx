@@ -83,41 +83,108 @@ export const SupabaseProvider = ({ children }) => {
 
   const loadUserProfile = async (userId) => {
     try {
-      const { data, error } = await supabase
+      // Add timeout for database calls
+      const profilePromise = supabase
         .from('user_profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile load timeout')), 5000)
+      );
+
+      const { data, error } = await Promise.race([
+        profilePromise,
+        timeoutPromise,
+      ]).catch(async (raceError) => {
+        // If timeout, try once more without timeout
+        if (raceError.message === 'Profile load timeout') {
+          console.warn('Profile load timed out, retrying...');
+          return await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+        }
+        throw raceError;
+      });
+
       if (error && error.code !== 'PGRST116') {
         // PGRST116 = no rows returned, which is fine for new users
         console.error('Error loading profile:', error);
+        // If table doesn't exist or other error, create default profile
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.warn('user_profiles table may not exist. Please run database migrations.');
+          // Set a default profile so app can continue
+          setProfile({
+            id: userId,
+            name: 'Étudiant',
+            level: 1,
+            xp: 0,
+            streak: 0,
+            last_activity_date: null,
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       if (data) {
         setProfile(data);
       } else {
         // Create profile if it doesn't exist
-        const { data: newProfile, error: createError } = await supabase
-          .from('user_profiles')
-          .insert({
+        try {
+          const { data: newProfile, error: createError } = await supabase
+            .from('user_profiles')
+            .insert({
+              id: userId,
+              name: 'Étudiant',
+              level: 1,
+              xp: 0,
+              streak: 0,
+            })
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('Error creating profile:', createError);
+            // Set default profile anyway so app can continue
+            setProfile({
+              id: userId,
+              name: 'Étudiant',
+              level: 1,
+              xp: 0,
+              streak: 0,
+              last_activity_date: null,
+            });
+          } else {
+            setProfile(newProfile);
+          }
+        } catch (createErr) {
+          console.error('Error in profile creation:', createErr);
+          // Set default profile so app can continue
+          setProfile({
             id: userId,
             name: 'Étudiant',
             level: 1,
             xp: 0,
             streak: 0,
-          })
-          .select()
-          .single();
-
-        if (createError) {
-          console.error('Error creating profile:', createError);
-        } else {
-          setProfile(newProfile);
+            last_activity_date: null,
+          });
         }
       }
     } catch (error) {
       console.error('Error in loadUserProfile:', error);
+      // Set default profile so app can continue even if database fails
+      setProfile({
+        id: userId,
+        name: 'Étudiant',
+        level: 1,
+        xp: 0,
+        streak: 0,
+        last_activity_date: null,
+      });
     } finally {
       setLoading(false);
     }
