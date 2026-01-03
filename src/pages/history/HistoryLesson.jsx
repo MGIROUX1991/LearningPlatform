@@ -308,10 +308,10 @@ const HistoryLesson = () => {
   const currentPageData = lesson.pages[currentPage];
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 md:px-0">
       <Link
         to="/history"
-        className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-6"
+        className="inline-flex items-center space-x-2 text-blue-300 hover:text-blue-200 mb-4 sm:mb-6 text-sm sm:text-base"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Retour à l'Histoire</span>
@@ -329,53 +329,53 @@ const HistoryLesson = () => {
           </div>
 
           {/* Parchment Scroll */}
-          <div className="parchment-bg scroll-texture rounded-lg border-4 border-amber-800/50 shadow-2xl p-12 relative">
-            {/* Decorative Corners */}
-            <div className="absolute top-4 left-4 w-12 h-12 border-t-4 border-l-4 border-amber-700/50"></div>
-            <div className="absolute top-4 right-4 w-12 h-12 border-t-4 border-r-4 border-amber-700/50"></div>
-            <div className="absolute bottom-4 left-4 w-12 h-12 border-b-4 border-l-4 border-amber-700/50"></div>
-            <div className="absolute bottom-4 right-4 w-12 h-12 border-b-4 border-r-4 border-amber-700/50"></div>
+          <div className="parchment-bg scroll-texture rounded-lg border-4 border-amber-800/50 shadow-2xl p-4 sm:p-6 md:p-12 relative">
+            {/* Decorative Corners - Smaller on mobile */}
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 border-t-2 sm:border-t-4 border-l-2 sm:border-l-4 border-amber-700/50"></div>
+            <div className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 border-t-2 sm:border-t-4 border-r-2 sm:border-r-4 border-amber-700/50"></div>
+            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 border-b-2 sm:border-b-4 border-l-2 sm:border-l-4 border-amber-700/50"></div>
+            <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 w-8 h-8 sm:w-12 sm:h-12 border-b-2 sm:border-b-4 border-r-2 sm:border-r-4 border-amber-700/50"></div>
 
             <div className="max-w-3xl mx-auto">
-              <h1 className="text-4xl font-bold text-amber-900 mb-8 text-center font-serif">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-900 mb-4 sm:mb-6 md:mb-8 text-center font-serif">
                 {lesson.title}
               </h1>
 
               {/* Drop Cap for first paragraph */}
               {currentPage === 0 && (
-                <div className="mb-6">
-                  <span className="float-left text-8xl font-bold text-amber-800 leading-none mr-2 mt-2 font-serif">
+                <div className="mb-4 sm:mb-6">
+                  <span className="float-left text-5xl sm:text-6xl md:text-8xl font-bold text-amber-800 leading-none mr-2 mt-1 sm:mt-2 font-serif">
                     A
                   </span>
-                  <p className="text-lg text-amber-900 leading-relaxed font-serif">
+                  <p className="text-sm sm:text-base md:text-lg text-amber-900 leading-relaxed font-serif">
                     {currentPageData.content}
                   </p>
                 </div>
               )}
 
               {currentPage > 0 && (
-                <p className="text-lg text-amber-900 leading-relaxed mb-6 font-serif">
+                <p className="text-sm sm:text-base md:text-lg text-amber-900 leading-relaxed mb-4 sm:mb-6 font-serif">
                   {currentPageData.content}
                 </p>
               )}
 
               {/* Fun Fact Callout */}
               {currentPageData.funFact && (
-                <div className="bg-amber-200/60 border-l-4 border-amber-600 p-4 my-6 rounded-r-lg">
-                  <div className="font-bold text-amber-900 mb-2">💡 Le saviez-vous?</div>
-                  <p className="text-amber-800 font-serif">{currentPageData.funFact}</p>
+                <div className="bg-amber-200/60 border-l-4 border-amber-600 p-3 sm:p-4 my-4 sm:my-6 rounded-r-lg">
+                  <div className="font-bold text-amber-900 mb-2 text-sm sm:text-base">💡 Le saviez-vous?</div>
+                  <p className="text-xs sm:text-sm md:text-base text-amber-800 font-serif break-words">{currentPageData.funFact}</p>
                 </div>
               )}
 
               {/* Vocabulary Callout */}
               {currentPageData.vocabulary && (
-                <div className="bg-blue-100/60 border-l-4 border-blue-600 p-4 my-6 rounded-r-lg">
-                  <div className="font-bold text-blue-900 mb-2">📚 Vocabulaire</div>
+                <div className="bg-blue-100/60 border-l-4 border-blue-600 p-3 sm:p-4 my-4 sm:my-6 rounded-r-lg">
+                  <div className="font-bold text-blue-900 mb-2 text-sm sm:text-base">📚 Vocabulaire</div>
                   <div className="space-y-2">
                     {Object.entries(currentPageData.vocabulary).map(([term, definition]) => (
-                      <div key={term}>
-                        <span className="font-semibold text-blue-900">{term}:</span>{' '}
-                        <span className="text-blue-800 font-serif">{definition}</span>
+                      <div key={term} className="break-words">
+                        <span className="font-semibold text-blue-900 text-sm sm:text-base">{term}:</span>{' '}
+                        <span className="text-blue-800 font-serif text-xs sm:text-sm md:text-base">{definition}</span>
                       </div>
                     ))}
                   </div>
@@ -383,7 +383,7 @@ const HistoryLesson = () => {
               )}
 
               {/* Page Indicator */}
-              <div className="text-center mt-8 text-amber-700 font-serif">
+              <div className="text-center mt-4 sm:mt-6 md:mt-8 text-amber-700 font-serif text-sm sm:text-base">
                 Page {currentPage + 1} sur {totalPages}
               </div>
             </div>
@@ -399,19 +399,20 @@ const HistoryLesson = () => {
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center mt-8">
+          <div className="flex justify-between items-center mt-4 sm:mt-6 md:mt-8 gap-2">
             <button
               onClick={handlePrevious}
               disabled={currentPage === 0}
-              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm sm:text-base"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Précédent</span>
+              <span className="hidden sm:inline">Précédent</span>
+              <span className="sm:hidden">Préc.</span>
             </button>
 
             <button
               onClick={handleNext}
-              className="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all"
+              className="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all text-sm sm:text-base"
             >
               <span>{isLastPage ? 'Quiz' : 'Suivant'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -419,10 +420,10 @@ const HistoryLesson = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-blue-500/20">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">Quiz de révision</h2>
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 border border-blue-500/20">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6 md:mb-8 text-center">Quiz de révision</h2>
           
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {lesson.quiz.questions.map((question) => {
               const userAnswer = quizAnswers[question.id];
               const isCorrect = userAnswer === question.correct;
@@ -430,9 +431,9 @@ const HistoryLesson = () => {
               return (
                 <div
                   key={question.id}
-                  className="bg-white/5 rounded-xl p-6 border border-white/10"
+                  className="bg-white/5 rounded-xl p-4 sm:p-6 border border-white/10"
                 >
-                  <h3 className="text-xl font-semibold text-white mb-4">{question.question}</h3>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-3 sm:mb-4 break-words">{question.question}</h3>
                   <div className="space-y-2">
                     {question.options.map((option, index) => {
                       const isSelected = userAnswer === index;
@@ -443,7 +444,7 @@ const HistoryLesson = () => {
                           key={index}
                           onClick={() => !quizCompleted && handleQuizAnswer(question.id, index)}
                           disabled={quizCompleted}
-                          className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                          className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all ${
                             showCorrect
                               ? 'bg-green-500/20 border-green-500'
                               : isSelected && !quizCompleted
@@ -453,9 +454,9 @@ const HistoryLesson = () => {
                               : 'bg-white/5 border-white/10 hover:border-white/20'
                           }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-white">{option}</span>
-                            {showCorrect && <CheckCircle className="w-5 h-5 text-green-400" />}
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-white text-sm sm:text-base break-words">{option}</span>
+                            {showCorrect && <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" />}
                           </div>
                         </button>
                       );
@@ -466,10 +467,10 @@ const HistoryLesson = () => {
             })}
           </div>
 
-          <div className="mt-8 flex justify-between items-center">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
             <button
               onClick={handlePrevious}
-              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-all"
+              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-all text-sm sm:text-base w-full sm:w-auto"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Retour</span>
@@ -479,17 +480,17 @@ const HistoryLesson = () => {
               <button
                 onClick={handleCompleteQuiz}
                 disabled={!lesson.quiz.questions.every(q => quizAnswers[q.id] !== undefined)}
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold text-sm sm:text-base w-full sm:w-auto"
               >
                 Soumettre les réponses
               </button>
             ) : (
               <button
                 onClick={handleComplete}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-3 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all font-semibold flex items-center space-x-2"
+                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all font-semibold flex items-center justify-center space-x-2 text-sm sm:text-base w-full sm:w-auto"
               >
                 <span>Terminer le chapitre</span>
-                <CheckCircle className="w-5 h-5" />
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             )}
           </div>
