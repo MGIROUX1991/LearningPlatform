@@ -36,20 +36,18 @@ const Auth = () => {
 
     try {
       if (isSignUp) {
-        const { data, error } = await signUp(email, password, name);
-        if (error) throw error;
+        const data = await signUp(email, password, name);
         
         // If email confirmation is disabled, user is automatically signed in
-        if (data.session) {
+        if (data && data.session) {
           navigate('/dashboard');
         } else {
           setMessage('Compte créé! Vérifiez votre email pour confirmer votre compte.');
         }
       } else {
-        const { data, error } = await signIn(email, password);
-        if (error) throw error;
+        const data = await signIn(email, password);
         
-        if (data.session) {
+        if (data && data.session) {
           navigate('/dashboard');
         }
       }

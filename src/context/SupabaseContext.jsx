@@ -239,6 +239,11 @@ export const SupabaseProvider = ({ children }) => {
         throw error;
       }
       
+      // Ensure data exists before accessing its properties
+      if (!data) {
+        throw new Error('Erreur lors de la création du compte. Veuillez réessayer.');
+      }
+      
       // If session exists (email confirmation disabled), load profile
       // The database trigger should create the profile automatically, but we'll wait a bit
       // and then try to load it
@@ -256,19 +261,33 @@ export const SupabaseProvider = ({ children }) => {
   };
 
   const signIn = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) throw error;
-    
-    // Load profile after sign in
-    if (data.session) {
-      await loadUserProfile(data.user.id);
+      if (error) {
+        console.error('Sign in error:', error);
+        // Provide more user-friendly error messages
+        if (error.message.includes('Invalid login credentials') || error.message.includes('invalid')) {
+          throw new Error('Email ou mot de passe incorrect.');
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Veuillez confirmer votre email avant de vous connecter.');
+        }
+        throw error;
+      }
+      
+      // Load profile after sign in
+      if (data && data.session && data.user) {
+        await loadUserProfile(data.user.id);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error in signIn:', error);
+      throw error;
     }
-    
-    return data;
   };
 
   const signOut = async () => {
