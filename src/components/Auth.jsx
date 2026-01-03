@@ -54,7 +54,17 @@ const Auth = () => {
         }
       }
     } catch (err) {
-      setError(err.message || 'Une erreur est survenue');
+      console.error('Auth error:', err);
+      // Extract user-friendly error message
+      let errorMessage = 'Une erreur est survenue';
+      if (err.message) {
+        errorMessage = err.message;
+      } else if (err.error_description) {
+        errorMessage = err.error_description;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

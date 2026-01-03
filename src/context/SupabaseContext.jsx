@@ -215,24 +215,44 @@ export const SupabaseProvider = ({ children }) => {
   };
 
   const signUp = async (email, password, name) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name: name || 'Étudiant',
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name || 'Étudiant',
+          },
         },
-      },
-    });
+      });
 
-    if (error) throw error;
-    
-    // If session exists (email confirmation disabled), load profile
-    if (data.session) {
-      await loadUserProfile(data.user.id);
+      if (error) {
+        console.error('Sign up error:', error);
+        // Provide more user-friendly error messages
+        if (error.message.includes('already registered') || error.message.includes('already exists')) {
+          throw new Error('Cet email est déjà enregistré. Essayez de vous connecter.');
+        } else if (error.message.includes('password')) {
+          throw new Error('Le mot de passe doit contenir au moins 6 caractères.');
+        } else if (error.message.includes('email')) {
+          throw new Error('Veuillez entrer une adresse email valide.');
+        }
+        throw error;
+      }
+      
+      // If session exists (email confirmation disabled), load profile
+      // The database trigger should create the profile automatically, but we'll wait a bit
+      // and then try to load it
+      if (data.session && data.user) {
+        // Wait a moment for the trigger to create the profile
+        await new Promise(resolve => setTimeout(resolve, 500));
+        await loadUserProfile(data.user.id);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error in signUp:', error);
+      throw error;
     }
-    
-    return data;
   };
 
   const signIn = async (email, password) => {
