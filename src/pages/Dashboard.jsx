@@ -7,8 +7,20 @@ import { BookOpen, Calculator, Flame, Trophy, Target, TrendingUp, Award, CheckCi
 const Dashboard = () => {
   const { user, dailyQuests, progress, XP_PER_LEVEL, loading } = useApp();
   
-  // Show loading state if user data is not ready
-  if (loading || !user) {
+  // Show loading state only if we're truly loading and don't have user data yet
+  // Don't show loading if we have user data but are just refreshing in background
+  if (!user) {
+    // No user at all - show loading
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        <div className="text-white text-xl">Chargement...</div>
+      </div>
+    );
+  }
+  
+  // If we have user data, show the dashboard even if loading (background refresh)
+  // Only show loading overlay if we're in initial load state
+  if (loading && (!progress || Object.keys(progress).length === 0) && dailyQuests.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
         <div className="text-white text-xl">Chargement...</div>

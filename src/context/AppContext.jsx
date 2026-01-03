@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useSupabase } from './SupabaseContext';
 import { progressService, achievementService, questService } from '../services/dataService';
 
@@ -20,18 +20,38 @@ export const AppProvider = ({ children }) => {
   const [achievements, setAchievements] = useState([]);
   const [dailyQuests, setDailyQuests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const lastLoadedUserIdRef = useRef(null);
 
-  // Load data when user changes
+  // Load data when user changes (but only if user ID actually changed)
   useEffect(() => {
-    if (user && profile) {
-      loadAllData();
-    } else {
+    const currentUserId = user?.id || (user && typeof user === 'string' ? user : null);
+    const profileId = profile?.id || null;
+    
+    if (user && profile && currentUserId) {
+      // Only reload if this is a different user or we don't have data yet
+      const hasData = Object.keys(progress).length > 0 || achievements.length > 0 || dailyQuests.length > 0;
+      const userIdChanged = lastLoadedUserIdRef.current !== currentUserId;
+      
+      // Only reload if we don't have data or if the user ID changed
+      if (!hasData || userIdChanged) {
+        lastLoadedUserIdRef.current = currentUserId;
+        loadAllData();
+      } else {
+        // We already have data for this user, just ensure loading is false
+        setLoading(false);
+      }
+    } else if (!user) {
+      // User logged out - clear data
+      lastLoadedUserIdRef.current = null;
       setProgress({});
       setAchievements([]);
       setDailyQuests([]);
       setLoading(false);
     }
-  }, [user, profile]);
+    // Note: We intentionally don't include progress, achievements, dailyQuests in deps
+    // to avoid infinite loops. We only want to reload when user/profile changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, profile?.id]);
 
   // Fallback: if loading takes too long, stop loading anyway
   useEffect(() => {
@@ -46,24 +66,55 @@ export const AppProvider = ({ children }) => {
   }, [loading]);
 
   const loadAllData = async () => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    // Get user ID from Supabase auth user object
+    const userId = user.id;
+    if (!userId) {
+      console.warn('Cannot load data: no user ID', user);
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);
 
-      // Load progress for all subjects
-      const allProgress = await progressService.getAllProgress(user.id);
-      setProgress(allProgress);
+      // Load all data in parallel for better performance
+      const [allProgress, userAchievements, quests] = await Promise.allSettled([
+        progressService.getAllProgress(userId),
+        achievementService.getAchievements(userId),
+        questService.getDailyQuests(userId),
+      ]);
 
-      // Load achievements
-      const userAchievements = await achievementService.getAchievements(user.id);
-      setAchievements(userAchievements);
+      // Set progress
+      if (allProgress.status === 'fulfilled') {
+        setProgress(allProgress.value);
+      } else {
+        console.error('Error loading progress:', allProgress.reason);
+        setProgress({});
+      }
 
-      // Load daily quests
-      const quests = await questService.getDailyQuests(user.id);
-      setDailyQuests(quests);
+      // Set achievements
+      if (userAchievements.status === 'fulfilled') {
+        setAchievements(userAchievements.value);
+      } else {
+        console.error('Error loading achievements:', userAchievements.reason);
+        setAchievements([]);
+      }
+
+      // Set daily quests
+      if (quests.status === 'fulfilled') {
+        setDailyQuests(quests.value);
+      } else {
+        console.error('Error loading quests:', quests.reason);
+        setDailyQuests([]);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
+      // Don't clear existing data on error - keep what we have
     } finally {
       setLoading(false);
     }
