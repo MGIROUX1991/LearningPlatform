@@ -22,19 +22,32 @@ export const SupabaseProvider = ({ children }) => {
     let mounted = true;
 
     // Get initial session with error handling
-    supabase.auth.getSession()
+    // Use a race condition with timeout to prevent hanging
+    const sessionPromise = supabase.auth.getSession();
+    const sessionTimeout = new Promise((resolve) => 
+      setTimeout(() => resolve({ data: { session: null }, error: null }), 5000)
+    );
+    
+    Promise.race([sessionPromise, sessionTimeout])
       .then(({ data: { session }, error }) => {
         if (!mounted) return;
         
         if (error) {
           console.error('Error getting session:', error);
+          // Don't clear user on error - might be network issue
+          // The onAuthStateChange listener will handle session restoration
           setLoading(false);
           return;
         }
 
-        setUser(session?.user ?? null);
         if (session?.user) {
-          loadUserProfile(session.user.id);
+          setUser(session.user);
+          loadUserProfile(session.user.id).catch(() => {
+            // If profile load fails, continue anyway
+            if (mounted) {
+              setLoading(false);
+            }
+          });
         } else {
           setLoading(false);
         }
@@ -42,6 +55,7 @@ export const SupabaseProvider = ({ children }) => {
       .catch((error) => {
         console.error('Error in getSession:', error);
         if (mounted) {
+          // Don't clear user on error - might be temporary network issue
           setLoading(false);
         }
       });
@@ -52,36 +66,99 @@ export const SupabaseProvider = ({ children }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
       
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await loadUserProfile(session.user.id);
-      } else {
-        setProfile(null);
-        setLoading(false);
+      console.log('Auth state change:', event, session?.user?.id || 'no user');
+      
+      // Handle different auth events
+      switch (event) {
+        case 'SIGNED_IN':
+        case 'TOKEN_REFRESHED':
+          // User is signed in or token was refreshed - keep them logged in
+          if (session?.user) {
+            setUser(session.user);
+            // Only reload profile if we don't have one or if it's a new sign-in
+            if (event === 'SIGNED_IN' || !profile) {
+              await loadUserProfile(session.user.id);
+            }
+            setLoading(false);
+          }
+          break;
+          
+        case 'SIGNED_OUT':
+          // User explicitly signed out
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          break;
+          
+        case 'USER_UPDATED':
+          // User data was updated
+          if (session?.user) {
+            setUser(session.user);
+            setLoading(false);
+          }
+          break;
+          
+        default:
+          // For other events, update user state but don't log out unless session is null
+          if (session?.user) {
+            setUser(session.user);
+            if (!profile) {
+              await loadUserProfile(session.user.id);
+            }
+            setLoading(false);
+          } else if (event === 'USER_DELETED') {
+            // Only clear on explicit deletion
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+          }
+          // Don't clear user on other events if we have a valid session stored
+          break;
       }
     });
 
     // Timeout fallback - if loading takes more than 8 seconds, stop loading
+    // But don't clear user if we have a session stored
     const timeout = setTimeout(() => {
       if (mounted) {
-        console.warn('Supabase initialization timeout - continuing anyway');
-        setLoading(false);
-        // If we have a user but no profile, set default profile
-        if (user && !profile) {
-          setProfile({
-            id: user.id,
-            name: 'Étudiant',
-            level: 1,
-            xp: 0,
-            streak: 0,
-            last_activity_date: null,
-          });
-        }
-        // If no user after timeout, ensure we're in logged-out state
-        if (!user) {
-          setUser(null);
-          setProfile(null);
-        }
+        // Check if we have a stored session before timing out
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (!mounted) return;
+          
+          if (session?.user) {
+            // We have a valid session, just set loading to false
+            console.warn('Supabase initialization timeout, but session exists - continuing');
+            setUser(session.user);
+            setLoading(false);
+            // Try to load profile if we don't have one
+            if (!profile) {
+              loadUserProfile(session.user.id).catch(() => {
+                // If profile load fails, set default
+                setProfile({
+                  id: session.user.id,
+                  name: 'Étudiant',
+                  level: 1,
+                  xp: 0,
+                  streak: 0,
+                  last_activity_date: null,
+                });
+              });
+            }
+          } else {
+            // No session, safe to clear
+            console.warn('Supabase initialization timeout - no session found');
+            setLoading(false);
+            setUser(null);
+            setProfile(null);
+          }
+        }).catch(() => {
+          // If getSession fails, just stop loading but don't clear user
+          // (user might still be valid, just network issue)
+          if (mounted) {
+            console.warn('Supabase initialization timeout - getSession check failed');
+            setLoading(false);
+          }
+        });
       }
     }, 8000);
 

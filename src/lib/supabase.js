@@ -23,6 +23,8 @@ export const supabase = createClient(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
+      detectSessionInUrl: true,
+      // Use default storage (localStorage) with auto-generated key based on project URL
     },
   },
 );
