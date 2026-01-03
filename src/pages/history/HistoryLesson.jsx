@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { lessonService } from '../../services/adminService';
 import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 
 const HistoryLesson = () => {
@@ -11,9 +12,11 @@ const HistoryLesson = () => {
   const [quizAnswers, setQuizAnswers] = useState({});
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [lesson, setLesson] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Lesson content for all history chapters
-  const lessonContent = {
+  // Fallback lesson content (used if database doesn't have the lesson)
+  const fallbackLessonContent = {
     chapter1: {
       title: 'Les Grands Explorateurs',
       pages: [
@@ -254,7 +257,68 @@ const HistoryLesson = () => {
     },
   };
 
-  const lesson = lessonContent[chapterId] || lessonContent.chapter1;
+  // Load lesson from database
+  useEffect(() => {
+    const loadLesson = async () => {
+      setLoading(true);
+      try {
+        // Try to get lesson from database
+        const lessons = await lessonService.getLessons('history', chapterId);
+        if (lessons && lessons.length > 0) {
+          const dbLesson = lessons[0]; // Get first lesson for this chapter
+          
+          // Convert database format to component format
+          // Split content by double newlines to create pages
+          const contentParagraphs = dbLesson.content.split(/\n\n+/).filter(p => p.trim());
+          const pages = contentParagraphs.map((paragraph, index) => {
+            const page = { content: paragraph.trim() };
+            
+            // Add fun_fact to first page if it exists
+            if (index === 0 && dbLesson.fun_fact) {
+              page.funFact = dbLesson.fun_fact;
+            }
+            
+            // Add vocabulary to second page if it exists
+            if (index === 1 && dbLesson.vocabulary) {
+              page.vocabulary = dbLesson.vocabulary;
+            }
+            
+            return page;
+          });
+          
+          const convertedLesson = {
+            title: dbLesson.title,
+            pages: pages,
+            quiz: dbLesson.quiz || { questions: [] },
+          };
+          
+          setLesson(convertedLesson);
+        } else {
+          // Fallback to hardcoded content
+          const fallbackLesson = fallbackLessonContent[chapterId] || fallbackLessonContent.chapter1;
+          setLesson(fallbackLesson);
+        }
+      } catch (error) {
+        console.error('Error loading lesson:', error);
+        // Fallback to hardcoded content on error
+        const fallbackLesson = fallbackLessonContent[chapterId] || fallbackLessonContent.chapter1;
+        setLesson(fallbackLesson);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadLesson();
+  }, [chapterId]);
+
+  if (loading || !lesson) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        <div className="text-white text-xl">Chargement de la leçon...</div>
+      </div>
+    );
+  }
+
   const totalPages = lesson.pages.length;
   const isLastPage = currentPage === totalPages - 1;
 
