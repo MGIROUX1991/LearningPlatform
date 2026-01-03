@@ -9,6 +9,7 @@ import HistoryJournal from './pages/history/HistoryJournal';
 import MathOverview from './pages/math/MathOverview';
 import MathSkillTree from './pages/math/MathSkillTree';
 import MathProblemSolver from './pages/math/MathProblemSolver';
+import ScienceOverview from './pages/science/ScienceOverview';
 import CurriculumOverview from './components/CurriculumOverview';
 import Auth from './components/Auth';
 import PasswordReset from './components/PasswordReset';
@@ -147,6 +148,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <MathProblemSolver />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/science"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ScienceOverview />
                   </Layout>
                 </ProtectedRoute>
               }

@@ -1,9 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
-import { Home, BookOpen, Calculator, Trophy, User, LogOut, Settings, Shield, Menu, X, ChevronDown, Layers } from 'lucide-react';
+import { Home, BookOpen, Calculator, Trophy, User, LogOut, Settings, Shield, Menu, X, ChevronDown, Layers, Star } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useSupabase } from '../context/SupabaseContext';
 import { useAdmin } from '../context/AdminContext';
+import { favoritesService } from '../services/favoritesService';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -13,6 +14,7 @@ const Layout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modulesMenuOpen, setModulesMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [favorites, setFavorites] = useState([]);
   const modulesMenuRef = useRef(null);
   const userMenuRef = useRef(null);
 
@@ -100,27 +102,64 @@ const Layout = ({ children }) => {
                   </button>
 
                   {modulesMenuOpen && (
-                    <div className="absolute top-full left-0 mt-1 w-48 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-50 py-2">
-                      {moduleItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = location.pathname === item.path || 
-                          location.pathname.startsWith(item.path);
-                        return (
-                          <Link
-                            key={item.path}
-                            to={item.path}
-                            onClick={() => setModulesMenuOpen(false)}
-                            className={`flex items-center space-x-2 px-4 py-2 transition-all ${
-                              isActive
-                                ? 'bg-blue-500/20 text-blue-300'
-                                : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                            <span>{item.label}</span>
-                          </Link>
-                        );
-                      })}
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-50 py-2">
+                      {/* Default Modules */}
+                      {moduleItems.length > 0 && (
+                        <>
+                          {moduleItems.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = location.pathname === item.path || 
+                              location.pathname.startsWith(item.path);
+                            return (
+                              <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setModulesMenuOpen(false)}
+                                className={`flex items-center space-x-2 px-4 py-2 transition-all ${
+                                  isActive
+                                    ? 'bg-blue-500/20 text-blue-300'
+                                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                                }`}
+                              >
+                                <Icon className="w-4 h-4" />
+                                <span>{item.label}</span>
+                              </Link>
+                            );
+                          })}
+                          {favorites.filter(fav => fav.item_type === 'subject').length > 0 && (
+                            <div className="border-t border-white/10 my-2"></div>
+                          )}
+                        </>
+                      )}
+                      
+                      {/* Favorites */}
+                      {favorites
+                        .filter(fav => fav.item_type === 'subject')
+                        .map((fav) => {
+                          const isActive = location.pathname === fav.item_path || 
+                            location.pathname.startsWith(fav.item_path);
+                          return (
+                            <Link
+                              key={fav.id}
+                              to={fav.item_path}
+                              onClick={() => setModulesMenuOpen(false)}
+                              className={`flex items-center space-x-2 px-4 py-2 transition-all ${
+                                isActive
+                                  ? 'bg-blue-500/20 text-blue-300'
+                                  : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                              }`}
+                            >
+                              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                              <span className="flex-1">{fav.item_name}</span>
+                            </Link>
+                          );
+                        })}
+                      
+                      {favorites.filter(fav => fav.item_type === 'subject').length === 0 && moduleItems.length === 0 && (
+                        <div className="px-4 py-2 text-gray-400 text-sm">
+                          Aucun module disponible
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -268,6 +307,36 @@ const Layout = ({ children }) => {
                     </Link>
                   );
                 })}
+                
+                {/* Favorites in Mobile Menu */}
+                {favorites.filter(fav => fav.item_type === 'subject').length > 0 && (
+                  <>
+                    {moduleItems.length > 0 && (
+                      <div className="border-t border-white/10 my-2"></div>
+                    )}
+                    {favorites
+                      .filter(fav => fav.item_type === 'subject')
+                      .map((fav) => {
+                        const isActive = location.pathname === fav.item_path || 
+                          location.pathname.startsWith(fav.item_path);
+                        return (
+                          <Link
+                            key={fav.id}
+                            to={fav.item_path}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                              isActive
+                                ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                                : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                            <span>{fav.item_name}</span>
+                          </Link>
+                        );
+                      })}
+                  </>
+                )}
               </div>
 
               {/* Curriculum */}

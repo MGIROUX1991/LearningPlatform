@@ -1,13 +1,89 @@
-import { useState } from 'react';
-import { BookOpen, GraduationCap, CheckCircle, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { BookOpen, GraduationCap, CheckCircle, Clock, Star } from 'lucide-react';
 import { QUEBEC_CURRICULUM, getMandatorySubjects } from '../data/quebecCurriculum';
+import { favoritesService } from '../services/favoritesService';
+import { useSupabase } from '../context/SupabaseContext';
 
 const CurriculumOverview = () => {
+  const { user } = useSupabase();
   const [selectedYear, setSelectedYear] = useState('Secondary I');
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const [favorites, setFavorites] = useState([]);
+  const [favoriteStatus, setFavoriteStatus] = useState({});
 
   const years = ['Secondary I', 'Secondary II', 'Secondary III', 'Secondary IV', 'Secondary V'];
   const mandatorySubjects = getMandatorySubjects(selectedYear);
+
+  // Load favorites
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (user) {
+        const favs = await favoritesService.getUserFavorites();
+        setFavorites(favs);
+        const status = {};
+        favs.forEach(fav => {
+          status[`${fav.item_type}-${fav.item_id}`] = true;
+        });
+        setFavoriteStatus(status);
+      }
+    };
+    loadFavorites();
+  }, [user]);
+
+  const handleToggleFavorite = async (subject) => {
+    if (!user) return;
+    
+    const itemType = 'subject';
+    const itemId = subject.id;
+    const itemName = subject.name;
+    const itemPath = getSubjectPath(subject.id);
+    const itemIcon = getSubjectIconName(subject.category);
+
+    try {
+      await favoritesService.toggleFavorite(itemType, itemId, itemName, itemPath, itemIcon);
+      
+      // Update local state
+      const key = `${itemType}-${itemId}`;
+      const isFav = favoriteStatus[key];
+      setFavoriteStatus({
+        ...favoriteStatus,
+        [key]: !isFav,
+      });
+      
+      // Reload favorites
+      const favs = await favoritesService.getUserFavorites();
+      setFavorites(favs);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  const getSubjectPath = (subjectId) => {
+    const paths = {
+      history: '/history',
+      math: '/math',
+      french: '/french',
+      english: '/english',
+      science: '/science',
+      geography: '/geography',
+      arts: '/arts',
+      physicalEducation: '/physical-education',
+    };
+    return paths[subjectId] || '#';
+  };
+
+  const getSubjectIconName = (category) => {
+    const icons = {
+      language: '📚',
+      stem: '🔬',
+      social: '🌍',
+      arts: '🎨',
+      health: '💪',
+      practical: '💰',
+    };
+    return icons[category] || '📖';
+  };
 
   const getSubjectIcon = (category) => {
     switch (category) {
@@ -94,29 +170,63 @@ const CurriculumOverview = () => {
               req => req.subject === subject.id && req.level === selectedYear
             );
 
+            const subjectPath = getSubjectPath(subject.id);
+            const isFavorited = favoriteStatus[`subject-${subject.id}`];
+            const hasModule = ['history', 'math', 'science'].includes(subject.id);
+
             return (
               <div
                 key={subject.id}
-                onClick={() => setSelectedSubject(selectedSubject?.id === subject.id ? null : subject)}
-                className={`bg-white/5 hover:bg-white/10 rounded-xl p-4 sm:p-6 border-2 cursor-pointer transition-all ${
+                className={`bg-white/5 hover:bg-white/10 rounded-xl p-4 sm:p-6 border-2 transition-all ${
                   selectedSubject?.id === subject.id
                     ? 'border-blue-400 bg-blue-500/20'
                     : 'border-white/10 hover:border-white/20'
                 }`}
               >
                 <div className="flex items-start justify-between mb-4 gap-2">
-                  <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                  <div 
+                    className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0 cursor-pointer"
+                    onClick={() => setSelectedSubject(selectedSubject?.id === subject.id ? null : subject)}
+                  >
                     <span className="text-2xl sm:text-3xl flex-shrink-0">{getSubjectIcon(subject.category)}</span>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base sm:text-lg font-bold text-white truncate">{subject.name}</h3>
                       <p className="text-xs sm:text-sm text-gray-400 truncate">{subject.englishName}</p>
                     </div>
                   </div>
-                  {isGraduationReq && (
-                    <div className="bg-yellow-500/20 px-2 py-1 rounded text-xs text-yellow-300 flex-shrink-0">
-                      Diplôme
-                    </div>
-                  )}
+                  <div className="flex items-center space-x-2 flex-shrink-0">
+                    {isGraduationReq && (
+                      <div className="bg-yellow-500/20 px-2 py-1 rounded text-xs text-yellow-300">
+                        Diplôme
+                      </div>
+                    )}
+                    {user && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleFavorite(subject);
+                        }}
+                        className={`p-2 rounded-lg transition-all ${
+                          isFavorited
+                            ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'
+                            : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-yellow-400'
+                        }`}
+                        title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                      >
+                        <Star className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
+                      </button>
+                    )}
+                    {hasModule && (
+                      <Link
+                        to={subjectPath}
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all"
+                        title="Accéder au module"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
 
                 {yearData && (
