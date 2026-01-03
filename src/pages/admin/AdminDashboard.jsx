@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Settings, Users, FileText, BarChart3 } from 'lucide-react';
+import { BookOpen, Settings, Users, FileText, BarChart3, FileText as FileTextIcon } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 
 const AdminDashboard = () => {
@@ -34,6 +34,14 @@ const AdminDashboard = () => {
       icon: BookOpen,
       color: 'from-blue-500 to-cyan-600',
       path: '/admin/lessons',
+    },
+    {
+      id: 'context-pages',
+      name: 'Pages de contexte',
+      description: 'Gérer les pages wiki (personnages, lieux, événements)',
+      icon: FileTextIcon,
+      color: 'from-purple-500 to-pink-600',
+      path: '/admin/context-pages',
     },
     {
       id: 'users',

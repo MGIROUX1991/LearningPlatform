@@ -17,6 +17,8 @@ import Settings from './pages/Settings';
 import ResetPasswordConfirm from './pages/ResetPasswordConfirm';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import LessonManager from './pages/admin/LessonManager';
+import ContextPageManager from './pages/admin/ContextPageManager';
+import ContextPage from './pages/ContextPage';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -110,6 +112,16 @@ function App() {
               }
             />
             <Route
+              path="/context/:slug"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ContextPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/math"
               element={
                 <ProtectedRoute>
@@ -177,6 +189,16 @@ function App() {
                 <AdminRoute>
                   <Layout>
                     <LessonManager />
+                  </Layout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/context-pages"
+              element={
+                <AdminRoute>
+                  <Layout>
+                    <ContextPageManager />
                   </Layout>
                 </AdminRoute>
               }
