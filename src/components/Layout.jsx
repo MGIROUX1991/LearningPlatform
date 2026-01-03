@@ -12,7 +12,9 @@ const Layout = ({ children }) => {
   const { isAdmin } = useAdmin();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modulesMenuOpen, setModulesMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const modulesMenuRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   const handleSignOut = async () => {
     try {
@@ -22,27 +24,29 @@ const Layout = ({ children }) => {
     }
   };
 
-  // Close modules menu when clicking outside
+  // Close dropdown menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modulesMenuRef.current && !modulesMenuRef.current.contains(event.target)) {
         setModulesMenuOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
     };
 
-    if (modulesMenuOpen) {
+    if (modulesMenuOpen || userMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [modulesMenuOpen]);
+  }, [modulesMenuOpen, userMenuOpen]);
 
   const moduleItems = [
     { path: '/history', icon: BookOpen, label: 'Histoire' },
     { path: '/math', icon: Calculator, label: 'Mathématiques' },
-    { path: '/curriculum', icon: BookOpen, label: 'Curriculum' },
   ];
 
   const isModuleActive = moduleItems.some(item => 
@@ -100,7 +104,7 @@ const Layout = ({ children }) => {
                       {moduleItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path || 
-                          (item.path !== '/curriculum' && location.pathname.startsWith(item.path));
+                          location.pathname.startsWith(item.path);
                         return (
                           <Link
                             key={item.path}
@@ -120,6 +124,19 @@ const Layout = ({ children }) => {
                     </div>
                   )}
                 </div>
+
+                {/* Curriculum */}
+                <Link
+                  to="/curriculum"
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
+                    location.pathname === '/curriculum'
+                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Curriculum</span>
+                </Link>
 
                 {/* Teaching (Admin) */}
                 {isAdmin && (
@@ -153,30 +170,45 @@ const Layout = ({ children }) => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-2 bg-white/10 px-3 py-2 rounded-lg">
-                  <User className="w-4 h-4 text-blue-400" />
-                  <span className="text-white">{user.name}</span>
-                </div>
+                {/* User Dropdown */}
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-all text-gray-300 hover:text-white"
+                  >
+                    <User className="w-4 h-4 text-blue-400" />
+                    <span className="text-white">{user.name}</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
 
-                <Link
-                  to="/settings"
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
-                    location.pathname === '/settings'
-                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
-                      : 'bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white'
-                  }`}
-                >
-                  <Settings className="w-4 h-4" />
-                  <span>Paramètres</span>
-                </Link>
-                
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-all text-gray-300 hover:text-white"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Déconnexion</span>
-                </button>
+                  {userMenuOpen && (
+                    <div className="absolute top-full right-0 mt-1 w-48 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-50 py-2">
+                      <Link
+                        to="/settings"
+                        onClick={() => setUserMenuOpen(false)}
+                        className={`flex items-center space-x-2 px-4 py-2 transition-all ${
+                          location.pathname === '/settings'
+                            ? 'bg-blue-500/20 text-blue-300'
+                            : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <Settings className="w-4 h-4" />
+                        <span>Paramètres</span>
+                      </Link>
+                      
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full flex items-center space-x-2 px-4 py-2 transition-all text-gray-300 hover:bg-white/10 hover:text-white"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Déconnexion</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -219,7 +251,7 @@ const Layout = ({ children }) => {
                 {moduleItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path || 
-                    (item.path !== '/curriculum' && location.pathname.startsWith(item.path));
+                    location.pathname.startsWith(item.path);
                   return (
                     <Link
                       key={item.path}
@@ -237,6 +269,20 @@ const Layout = ({ children }) => {
                   );
                 })}
               </div>
+
+              {/* Curriculum */}
+              <Link
+                to="/curriculum"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                  location.pathname === '/curriculum'
+                    ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>Curriculum</span>
+              </Link>
 
               {/* Teaching (Admin) */}
               {isAdmin && (
@@ -269,34 +315,35 @@ const Layout = ({ children }) => {
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-2 bg-white/10 px-4 py-3 rounded-lg">
-                      <User className="w-5 h-5 text-blue-400" />
-                      <span className="text-white">{user.name}</span>
+                    {/* User Section */}
+                    <div className="space-y-1">
+                      <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        {user.name}
+                      </div>
+                      <Link
+                        to="/settings"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                          location.pathname === '/settings'
+                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                            : 'bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white'
+                        }`}
+                      >
+                        <Settings className="w-5 h-5" />
+                        <span>Paramètres</span>
+                      </Link>
+                      
+                      <button
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full flex items-center space-x-3 bg-white/10 hover:bg-white/20 px-4 py-3 rounded-lg transition-all text-gray-300 hover:text-white"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span>Déconnexion</span>
+                      </button>
                     </div>
-
-                    <Link
-                      to="/settings"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                        location.pathname === '/settings'
-                          ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
-                          : 'bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white'
-                      }`}
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span>Paramètres</span>
-                    </Link>
-                    
-                    <button
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        handleSignOut();
-                      }}
-                      className="w-full flex items-center space-x-3 bg-white/10 hover:bg-white/20 px-4 py-3 rounded-lg transition-all text-gray-300 hover:text-white"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      <span>Déconnexion</span>
-                    </button>
                   </div>
                 </>
               )}
