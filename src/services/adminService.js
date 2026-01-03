@@ -52,7 +52,7 @@ export const adminService = {
 };
 
 export const lessonService = {
-  async getLessons(subjectId, chapterId = null) {
+  async getLessons(subjectId, chapterId = null, filters = {}) {
     try {
       let query = supabase
         .from('lessons')
@@ -62,6 +62,16 @@ export const lessonService = {
 
       if (chapterId) {
         query = query.eq('chapter_id', chapterId);
+      }
+
+      // Filter by school year if provided
+      if (filters.school_year) {
+        query = query.eq('school_year', filters.school_year);
+      }
+
+      // Filter by competencies if provided
+      if (filters.competencies && filters.competencies.length > 0) {
+        query = query.overlaps('competencies', filters.competencies);
       }
 
       const { data, error } = await query;

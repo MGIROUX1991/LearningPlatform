@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAdmin } from '../../context/AdminContext';
 import { lessonService } from '../../services/adminService';
 import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
-import { Plus, Edit, Trash2, BookOpen, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Edit, Trash2, BookOpen, ArrowLeft, CheckCircle, XCircle, GraduationCap, Target } from 'lucide-react';
 
 const LessonManager = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
@@ -11,6 +11,8 @@ const LessonManager = () => {
   const [loading, setLoading] = useState(true);
   const [selectedSubject, setSelectedSubject] = useState('history');
   const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState('');
+  const [selectedCompetency, setSelectedCompetency] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingLesson, setEditingLesson] = useState(null);
 
@@ -18,18 +20,27 @@ const LessonManager = () => {
     if (isAdmin && selectedSubject) {
       loadLessons();
     }
-  }, [isAdmin, selectedSubject, selectedChapter]);
+  }, [isAdmin, selectedSubject, selectedChapter, selectedSchoolYear, selectedCompetency]);
 
   const loadLessons = async () => {
     setLoading(true);
     try {
-      const data = await lessonService.getLessons(selectedSubject, selectedChapter || null);
+      const filters = {};
+      if (selectedSchoolYear) filters.school_year = selectedSchoolYear;
+      if (selectedCompetency) filters.competencies = [selectedCompetency];
+      
+      const data = await lessonService.getLessons(selectedSubject, selectedChapter || null, filters);
       setLessons(data);
     } catch (error) {
       console.error('Error loading lessons:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getAvailableCompetencies = () => {
+    const subject = QUEBEC_CURRICULUM.subjects[selectedSubject];
+    return subject?.competencies || [];
   };
 
   const handleDelete = async (lessonId) => {
@@ -102,7 +113,8 @@ const LessonManager = () => {
 
       {/* Filters */}
       <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h3 className="text-lg font-bold text-white mb-4">Filtres</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <div>
             <label className="block text-gray-300 text-sm font-medium mb-2">Matière</label>
             <select
@@ -110,6 +122,7 @@ const LessonManager = () => {
               onChange={(e) => {
                 setSelectedSubject(e.target.value);
                 setSelectedChapter('');
+                setSelectedCompetency(''); // Reset competency when subject changes
               }}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               style={{ color: '#ffffff' }}
@@ -139,6 +152,61 @@ const LessonManager = () => {
               </select>
             </div>
           )}
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center space-x-2">
+              <GraduationCap className="w-4 h-4" />
+              <span>Année scolaire</span>
+            </label>
+            <select
+              value={selectedSchoolYear}
+              onChange={(e) => setSelectedSchoolYear(e.target.value)}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              style={{ color: '#ffffff' }}
+            >
+              <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Toutes les années</option>
+              <option value="Secondary I" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary I</option>
+              <option value="Secondary II" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary II</option>
+              <option value="Secondary III" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary III</option>
+              <option value="Secondary IV" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary IV</option>
+              <option value="Secondary V" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary V</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center space-x-2">
+              <Target className="w-4 h-4" />
+              <span>Compétence</span>
+            </label>
+            <select
+              value={selectedCompetency}
+              onChange={(e) => setSelectedCompetency(e.target.value)}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              style={{ color: '#ffffff' }}
+            >
+              <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Toutes les compétences</option>
+              {getAvailableCompetencies().map((comp) => (
+                <option key={comp.id} value={comp.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
+                  {comp.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-end">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedSchoolYear('');
+                setSelectedCompetency('');
+              }}
+              className="w-full px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all"
+            >
+              Réinitialiser les filtres
+            </button>
+          </div>
         </div>
       </div>
 
@@ -191,9 +259,31 @@ const LessonManager = () => {
                       <p className="text-gray-400 text-sm mb-2">
                         {lesson.subject_id} • {lesson.chapter_id}
                       </p>
+                      <div className="flex items-center space-x-2 mb-2 flex-wrap gap-2">
+                        {lesson.school_year && (
+                          <span className="inline-flex items-center space-x-1 px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-semibold">
+                            <GraduationCap className="w-3 h-3" />
+                            <span>{lesson.school_year}</span>
+                          </span>
+                        )}
+                        {lesson.competencies && lesson.competencies.length > 0 && (
+                          <span className="inline-flex items-center space-x-1 px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs">
+                            <Target className="w-3 h-3" />
+                            <span>{lesson.competencies.length} compétence(s)</span>
+                          </span>
+                        )}
+                      </div>
                       <p className="text-gray-300 line-clamp-2">{lesson.content.substring(0, 150)}...</p>
                     </div>
                     <div className="flex items-center space-x-2 ml-4">
+                      <Link
+                        to={`/history/lesson/${lesson.chapter_id}`}
+                        target="_blank"
+                        className="p-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all"
+                        title="Voir la leçon"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                      </Link>
                       <button
                         onClick={() => {
                           setEditingLesson(lesson);
@@ -224,8 +314,8 @@ const LessonManager = () => {
 // Lesson Editor Component
 const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    subject_id: subjectId || 'history',
-    chapter_id: chapterId || 'chapter1',
+    subject_id: subjectId || lesson?.subject_id || 'history',
+    chapter_id: chapterId || lesson?.chapter_id || 'chapter1',
     lesson_number: lesson?.lesson_number || 1,
     title: lesson?.title || '',
     content: lesson?.content || '',
@@ -233,9 +323,19 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
     vocabulary: lesson?.vocabulary || {},
     quiz: lesson?.quiz || { questions: [] },
     xp_reward: lesson?.xp_reward || 100,
+    school_year: lesson?.school_year || '',
+    competencies: lesson?.competencies || [],
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  // Get available competencies for the selected subject
+  const getAvailableCompetencies = () => {
+    const subject = QUEBEC_CURRICULUM.subjects[formData.subject_id];
+    return subject?.competencies || [];
+  };
+
+  const schoolYears = ['Secondary I', 'Secondary II', 'Secondary III', 'Secondary IV', 'Secondary V'];
 
   const historyChapters = [
     { id: 'chapter1', name: 'Les Grands Explorateurs' },
@@ -318,7 +418,14 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
             <label className="block text-gray-300 text-sm font-medium mb-2">Matière</label>
             <select
               value={formData.subject_id}
-              onChange={(e) => setFormData({ ...formData, subject_id: e.target.value })}
+              onChange={(e) => {
+                // Reset competencies when subject changes
+                setFormData({ 
+                  ...formData, 
+                  subject_id: e.target.value,
+                  competencies: []
+                });
+              }}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
               style={{ color: '#ffffff' }}
               required
@@ -373,6 +480,86 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               min="0"
             />
           </div>
+
+          <div>
+            <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center space-x-2">
+              <GraduationCap className="w-4 h-4" />
+              <span>Année scolaire</span>
+            </label>
+            <select
+              value={formData.school_year}
+              onChange={(e) => setFormData({ ...formData, school_year: e.target.value })}
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              style={{ color: '#ffffff' }}
+              required
+            >
+              <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Sélectionner une année</option>
+              {schoolYears.map((year) => (
+                <option key={year} value={year} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Competencies Selection */}
+        <div>
+          <label className="block text-gray-300 text-sm font-medium mb-2 flex items-center space-x-2">
+            <Target className="w-4 h-4" />
+            <span>Compétences</span>
+          </label>
+          <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+            {getAvailableCompetencies().length > 0 ? (
+              <div className="space-y-2">
+                {getAvailableCompetencies().map((competency) => {
+                  const isSelected = formData.competencies.includes(competency.id);
+                  return (
+                    <label
+                      key={competency.id}
+                      className={`flex items-start space-x-3 p-3 rounded-lg cursor-pointer transition-all ${
+                        isSelected
+                          ? 'bg-blue-500/20 border-2 border-blue-500/50'
+                          : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData({
+                              ...formData,
+                              competencies: [...formData.competencies, competency.id],
+                            });
+                          } else {
+                            setFormData({
+                              ...formData,
+                              competencies: formData.competencies.filter((c) => c !== competency.id),
+                            });
+                          }
+                        }}
+                        className="mt-1 w-4 h-4 text-blue-500 bg-white/10 border-white/20 rounded focus:ring-blue-500"
+                      />
+                      <div className="flex-1">
+                        <div className="text-white font-semibold text-sm">{competency.name}</div>
+                        <div className="text-gray-400 text-xs mt-1">{competency.description}</div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">
+                Aucune compétence disponible pour cette matière. Veuillez d'abord sélectionner une matière.
+              </p>
+            )}
+          </div>
+          {formData.competencies.length > 0 && (
+            <p className="text-blue-300 text-xs mt-2">
+              {formData.competencies.length} compétence(s) sélectionnée(s)
+            </p>
+          )}
         </div>
 
         <div>

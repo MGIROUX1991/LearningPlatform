@@ -2,7 +2,7 @@
 -- This migrates the history lessons that are currently hardcoded in HistoryLesson.jsx
 
 -- Chapter 1: Les Grands Explorateurs
-INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward)
+INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward, school_year, competencies)
 VALUES (
   'history',
   'chapter1',
@@ -18,11 +18,13 @@ Cartier effectua trois voyages au total (1534, 1535-1536, et 1541-1542). Lors de
   'Le premier explorateur européen à atteindre l''Amérique du Nord fut probablement Jean Cabot en 1497, naviguant pour le compte de l''Angleterre.',
   '{"Navigateur": "Personne qui dirige un navire en mer", "Nouveau Monde": "Terme utilisé par les Européens pour désigner les Amériques"}'::jsonb,
   '{"questions": [{"id": 1, "question": "Qui fut le premier explorateur français à naviguer vers le Nouveau Monde?", "options": ["Jean Cabot", "Jacques Cartier", "Samuel de Champlain", "Henry Hudson"], "correct": 1}, {"id": 2, "question": "En quelle année Jacques Cartier effectua-t-il son premier voyage?", "options": ["1497", "1534", "1608", "1663"], "correct": 1}, {"id": 3, "question": "Jusqu''où Cartier remonta-t-il le fleuve Saint-Laurent lors de son deuxième voyage?", "options": ["Québec", "Trois-Rivières", "Hochelaga (Montréal)", "Gaspé"], "correct": 2}]}'::jsonb,
-  100
-) ON CONFLICT (subject_id, chapter_id, lesson_number) DO NOTHING;
+  100,
+  'Secondary I',
+  ARRAY['characterize', 'interpret']
+) ON CONFLICT (subject_id, chapter_id, lesson_number) DO UPDATE SET school_year = 'Secondary I', competencies = ARRAY['characterize', 'interpret'];
 
 -- Chapter 2: La Traversée
-INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward)
+INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward, school_year, competencies)
 VALUES (
   'history',
   'chapter2',
@@ -40,11 +42,13 @@ La traversée était aussi un moment de grande incertitude. Les navigateurs deva
   'La traversée moyenne durait entre 6 et 12 semaines, selon les conditions météorologiques. Beaucoup de passagers souffraient du mal de mer et de maladies comme le scorbut.',
   '{"Caravelle": "Type de navire à voiles utilisé pour les voyages transatlantiques", "Scorbut": "Maladie causée par une carence en vitamine C, fréquente lors des longues traversées"}'::jsonb,
   '{"questions": [{"id": 1, "question": "Combien de temps durait généralement une traversée de l''Atlantique au XVIe siècle?", "options": ["2-3 semaines", "6-12 semaines", "3-4 mois", "6 mois"], "correct": 1}, {"id": 2, "question": "Quelle maladie était fréquente lors des longues traversées?", "options": ["La grippe", "Le scorbut", "La variole", "La peste"], "correct": 1}, {"id": 3, "question": "Comment les navigateurs s''orientaient-ils lors de la traversée?", "options": ["Avec des GPS", "En se fiant aux étoiles et au soleil", "En suivant les oiseaux", "En utilisant des boussoles modernes"], "correct": 1}]}'::jsonb,
-  100
-) ON CONFLICT (subject_id, chapter_id, lesson_number) DO NOTHING;
+  100,
+  'Secondary I',
+  ARRAY['characterize', 'interpret']
+) ON CONFLICT (subject_id, chapter_id, lesson_number) DO UPDATE SET school_year = 'Secondary I', competencies = ARRAY['characterize', 'interpret'];
 
 -- Chapter 3: Fondation de Québec
-INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward)
+INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward, school_year, competencies)
 VALUES (
   'history',
   'chapter3',
@@ -62,11 +66,13 @@ La fondation de Québec ouvrit la voie à l''expansion française en Amérique d
   'Québec fut la première ville permanente fondée par les Français en Amérique du Nord. Le nom "Québec" vient du mot algonquin "kébec", qui signifie "là où le fleuve se rétrécit".',
   '{"Colonie permanente": "Établissement destiné à durer, contrairement aux postes de traite temporaires", "Promontoire": "Éminence rocheuse qui s''avance dans la mer ou un fleuve"}'::jsonb,
   '{"questions": [{"id": 1, "question": "Qui fonda la ville de Québec en 1608?", "options": ["Jacques Cartier", "Samuel de Champlain", "Jean Talon", "Louis XIV"], "correct": 1}, {"id": 2, "question": "Que signifie le mot Québec en algonquin?", "options": ["Grande ville", "Là où le fleuve se rétrécit", "Montagne", "Fort"], "correct": 1}, {"id": 3, "question": "Pourquoi Champlain choisit-il l''emplacement de Québec?", "options": ["Pour l''or", "Pour sa position stratégique et sa défense naturelle", "Pour le climat", "Pour les animaux"], "correct": 1}]}'::jsonb,
-  100
-) ON CONFLICT (subject_id, chapter_id, lesson_number) DO NOTHING;
+  100,
+  'Secondary I',
+  ARRAY['characterize', 'interpret', 'construct']
+) ON CONFLICT (subject_id, chapter_id, lesson_number) DO UPDATE SET school_year = 'Secondary I', competencies = ARRAY['characterize', 'interpret', 'construct'];
 
 -- Chapter 4: La Vie Quotidienne
-INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward)
+INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward, school_year, competencies)
 VALUES (
   'history',
   'chapter4',
@@ -86,11 +92,13 @@ Malgré les difficultés, la vie en Nouvelle-France offrait aussi des moments de
   'Les hivers québécois étaient si rigoureux que les colons devaient adapter leurs techniques agricoles et leurs habitudes de vie. Beaucoup apprirent des peuples autochtones comment survivre dans ce climat.',
   '{"Seigneurie": "Système de propriété terrienne où un seigneur accordait des terres à des censitaires", "Censitaires": "Colons qui recevaient des terres d''un seigneur en échange de redevances"}'::jsonb,
   '{"questions": [{"id": 1, "question": "Quel système organisait la distribution des terres en Nouvelle-France?", "options": ["Le système féodal", "Le système seigneurial", "Le système démocratique", "Le système communautaire"], "correct": 1}, {"id": 2, "question": "Qu''est-ce qu''un censitaire?", "options": ["Un seigneur", "Un colon qui reçoit des terres d''un seigneur", "Un missionnaire", "Un artisan"], "correct": 1}, {"id": 3, "question": "Quel rôle jouait la religion dans la vie quotidienne?", "options": ["Aucun", "Un rôle central, rythmant l''année", "Seulement pour les fêtes", "Uniquement pour les autochtones"], "correct": 1}]}'::jsonb,
-  100
-) ON CONFLICT (subject_id, chapter_id, lesson_number) DO NOTHING;
+  100,
+  'Secondary I',
+  ARRAY['characterize', 'interpret', 'construct']
+) ON CONFLICT (subject_id, chapter_id, lesson_number) DO UPDATE SET school_year = 'Secondary I', competencies = ARRAY['characterize', 'interpret', 'construct'];
 
 -- Chapter 5: Relations avec les Autochtones
-INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward)
+INSERT INTO public.lessons (subject_id, chapter_id, lesson_number, title, content, fun_fact, vocabulary, quiz, xp_reward, school_year, competencies)
 VALUES (
   'history',
   'chapter5',
@@ -110,6 +118,8 @@ Malgré les défis, les relations franco-autochtones en Nouvelle-France furent g
   'Les Français apprirent beaucoup des peuples autochtones, notamment sur la chasse, la pêche, la survie en hiver et l''utilisation de plantes médicinales. En retour, ils introduisirent des outils en métal, des armes à feu et des textiles.',
   '{"Coureur des bois": "Trappeur français qui vivait parmi les peuples autochtones", "Alliance": "Accord de coopération entre les Français et les peuples autochtones"}'::jsonb,
   '{"questions": [{"id": 1, "question": "Quel était le principal moteur des relations commerciales entre Français et Autochtones?", "options": ["L''agriculture", "La traite des fourrures", "L''exploitation minière", "La pêche"], "correct": 1}, {"id": 2, "question": "Avec quels peuples autochtones les Français s''allièrent-ils principalement?", "options": ["Les Iroquois", "Les Hurons-Wendat et les Algonquins", "Les Sioux", "Les Apaches"], "correct": 1}, {"id": 3, "question": "Qu''est-ce qu''un coureur des bois?", "options": ["Un soldat", "Un trappeur français qui vivait parmi les peuples autochtones", "Un missionnaire", "Un marchand"], "correct": 1}]}'::jsonb,
-  100
-) ON CONFLICT (subject_id, chapter_id, lesson_number) DO NOTHING;
+  100,
+  'Secondary I',
+  ARRAY['characterize', 'interpret', 'construct']
+) ON CONFLICT (subject_id, chapter_id, lesson_number) DO UPDATE SET school_year = 'Secondary I', competencies = ARRAY['characterize', 'interpret', 'construct'];
 
