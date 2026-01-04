@@ -59,8 +59,8 @@ const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Top Navigation */}
-      <nav className="bg-black/30 backdrop-blur-md border-b border-blue-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="bg-black/30 backdrop-blur-md border-b border-blue-500/20 relative z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-50">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4 md:space-x-6">
               {/* Logo only */}
@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
                 </Link>
 
                 {/* Modules Dropdown */}
-                <div className="relative" ref={modulesMenuRef}>
+                <div className="relative z-[100]" ref={modulesMenuRef}>
                   <button
                     onClick={() => setModulesMenuOpen(!modulesMenuOpen)}
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
@@ -102,7 +102,7 @@ const Layout = ({ children }) => {
                   </button>
 
                   {modulesMenuOpen && (
-                    <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-50 py-2">
+                    <div className="absolute top-full left-0 mt-1 w-56 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-[9999] py-2">
                       {/* Default Modules */}
                       {moduleItems.length > 0 && (
                         <>
@@ -210,7 +210,7 @@ const Layout = ({ children }) => {
                 </div>
                 
                 {/* User Dropdown */}
-                <div className="relative" ref={userMenuRef}>
+                <div className="relative z-[100]" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-all text-gray-300 hover:text-white"
@@ -221,7 +221,7 @@ const Layout = ({ children }) => {
                   </button>
 
                   {userMenuOpen && (
-                    <div className="absolute top-full right-0 mt-1 w-48 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-50 py-2">
+                    <div className="absolute top-full right-0 mt-1 w-48 bg-slate-800/95 backdrop-blur-md rounded-lg border border-blue-500/20 shadow-xl z-[9999] py-2">
                       <Link
                         to="/settings"
                         onClick={() => setUserMenuOpen(false)}
