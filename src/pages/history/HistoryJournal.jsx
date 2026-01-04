@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { ArrowLeft, Ship, Wind, Droplet, Heart, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Ship, Wind, Droplet, Heart, CheckCircle, Map } from 'lucide-react';
+import InteractiveVoyageMap from '../../components/InteractiveVoyageMap';
 
 const HistoryJournal = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const HistoryJournal = () => {
   });
   const [currentDecision, setCurrentDecision] = useState(null);
   const [storyBranch, setStoryBranch] = useState('main');
+  const [showMap, setShowMap] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(1608);
+  const [landingLocation, setLandingLocation] = useState(null);
 
   const weatherEvents = [
     { type: 'Calme', description: 'Mer calme, vent favorable', effect: { morale: 5, supplies: -2 } },
@@ -101,6 +105,16 @@ const HistoryJournal = () => {
     navigate('/history');
   };
 
+  const handleLandingSelect = (location) => {
+    setLandingLocation(location);
+    // Add landing location to current entry context
+    if (currentEntry) {
+      setCurrentEntry(
+        `${currentEntry}\n\n[Point d'atterrissage: ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)} - Année ${location.year}]`
+      );
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <Link
@@ -112,6 +126,35 @@ const HistoryJournal = () => {
       </Link>
 
       <div className="space-y-6">
+        {/* Interactive Voyage Map Toggle */}
+        <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 backdrop-blur-md rounded-2xl p-6 border-2 border-blue-500/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">Carte Interactive du Voyage</h2>
+              <p className="text-gray-300 text-sm">
+                Explorez la Nouvelle-France et choisissez où vous souhaitez atterrir. 
+                Voyez comment les territoires ont changé au fil des années.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowMap(!showMap)}
+              className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-semibold"
+            >
+              <Map className="w-5 h-5" />
+              <span>{showMap ? 'Masquer la carte' : 'Afficher la carte'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Interactive Map */}
+        {showMap && (
+          <InteractiveVoyageMap
+            onLandingSelect={handleLandingSelect}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+          />
+        )}
+
         {/* Stats Panel */}
         <div className="bg-gradient-to-br from-amber-900/40 to-orange-900/40 backdrop-blur-md rounded-2xl p-6 border-2 border-amber-500/50">
           <h2 className="text-2xl font-bold text-white mb-4">Statistiques du Voyage</h2>
