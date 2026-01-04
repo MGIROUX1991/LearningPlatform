@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, ZoomControl } 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, Calendar, Layers } from 'lucide-react';
+import { getTerritoriesByYear } from '../data/historicalTerritories';
 
 // Fix for default marker icons in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -21,90 +22,130 @@ const MapUpdater = ({ center, zoom }) => {
   return null;
 };
 
-// Historical territory data (simplified polygons for New France region)
-const getTerritoriesByYear = (year) => {
-  const baseTerritories = {
-    // French territories (Nouvelle-France)
-    french: {
-      type: 'Feature',
-      properties: { name: 'Nouvelle-France', power: 'France', color: '#3B82F6' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-75, 45], [-70, 45], [-70, 48], [-75, 48], [-75, 45]
-        ]]
-      }
-    },
-    // British territories
-    british: {
-      type: 'Feature',
-      properties: { name: 'British Colonies', power: 'Britain', color: '#EF4444' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-75, 42], [-70, 42], [-70, 45], [-75, 45], [-75, 42]
-        ]]
-      }
-    },
-    // Iroquois Confederacy
-    iroquois: {
-      type: 'Feature',
-      properties: { name: 'Confédération Iroquoise', power: 'Iroquois', color: '#10B981' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-76, 43], [-74, 43], [-74, 45], [-76, 45], [-76, 43]
-        ]]
-      }
-    },
-    // Huron-Wendat
-    huron: {
-      type: 'Feature',
-      properties: { name: 'Huron-Wendat', power: 'Huron', color: '#F59E0B' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-79, 44], [-77, 44], [-77, 46], [-79, 46], [-79, 44]
-        ]]
-      }
-    },
-    // Algonquin
-    algonquin: {
-      type: 'Feature',
-      properties: { name: 'Algonquin', power: 'Algonquin', color: '#8B5CF6' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-78, 45], [-75, 45], [-75, 47], [-78, 47], [-78, 45]
-        ]]
-      }
-    },
+// Territory styling function
+const territoryStyle = (feature) => {
+  return {
+    fillColor: feature.properties.color,
+    fillOpacity: 0.3,
+    color: feature.properties.color,
+    weight: 2.5,
+    opacity: 0.8,
+    dashArray: '0',
   };
+};
 
-  // Territory changes based on year
-  const territories = { ...baseTerritories };
+// Territory interaction handler
+const onEachTerritory = (feature, layer) => {
+  layer.on({
+    mouseover: (e) => {
+      const layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.5,
+        weight: 3,
+      });
+    },
+    mouseout: (e) => {
+      const layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.3,
+        weight: 2.5,
+      });
+    },
+  });
 
-  // After 1759 (Battle of the Plains of Abraham), British control expands
-  if (year >= 1759) {
-    territories.french.geometry.coordinates = [[
-      [-75, 45], [-70, 45], [-70, 46.5], [-75, 46.5], [-75, 45]
-    ]];
-    territories.british.geometry.coordinates = [[
-      [-75, 42], [-70, 42], [-70, 46.5], [-75, 46.5], [-75, 42]
-    ]];
-  }
+  layer.bindPopup(`
+    <div style="font-family: sans-serif;">
+      <strong>${feature.properties.name}</strong><br/>
+      <small>Pouvoir: ${feature.properties.power}</small>
+    </div>
+  `);
+};
 
-  // Before 1608, no permanent French settlements
-  if (year < 1608) {
-    delete territories.french;
-  }
+// Component to handle smooth territory transitions
+const TerritoryLayer = ({ territories, year, previousYear }) => {
+  const [displayTerritories, setDisplayTerritories] = useState(territories);
+  const [transitionProgress, setTransitionProgress] = useState(1);
+  const transitionRef = useRef(null);
 
-  return Object.values(territories);
+  useEffect(() => {
+    if (previousYear !== year) {
+      // Start transition
+      setTransitionProgress(0);
+      const startTerritories = getTerritoriesByYear(previousYear);
+      setDisplayTerritories(startTerritories);
+
+      // Clear any existing animation
+      if (transitionRef.current) {
+        cancelAnimationFrame(transitionRef.current);
+      }
+
+      // Animate transition
+      const duration = 600; // 600ms transition
+      const startTime = Date.now();
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation (ease-in-out)
+        const eased = progress < 0.5 
+          ? 2 * progress * progress 
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
+        setTransitionProgress(eased);
+        
+        if (progress < 1) {
+          transitionRef.current = requestAnimationFrame(animate);
+        } else {
+          setDisplayTerritories(territories);
+          setTransitionProgress(1);
+          transitionRef.current = null;
+        }
+      };
+      
+      transitionRef.current = requestAnimationFrame(animate);
+    } else {
+      setDisplayTerritories(territories);
+      setTransitionProgress(1);
+    }
+
+    return () => {
+      if (transitionRef.current) {
+        cancelAnimationFrame(transitionRef.current);
+      }
+    };
+  }, [year, previousYear, territories]);
+
+  return (
+    <>
+      {displayTerritories.map((territory, index) => {
+        const style = territoryStyle(territory);
+        // Fade effect during transition
+        const opacity = transitionProgress < 1 
+          ? 0.2 + (transitionProgress * 0.3)
+          : style.fillOpacity;
+        
+        return (
+          <GeoJSON
+            key={`${territory.properties.name}-${year}-${index}`}
+            data={territory}
+            style={{
+              ...style,
+              fillOpacity: opacity,
+              opacity: Math.min(transitionProgress + 0.3, 1),
+            }}
+            onEachFeature={onEachTerritory}
+          />
+        );
+      })}
+    </>
+  );
 };
 
 const InteractiveVoyageMap = ({ onLandingSelect, selectedYear, onYearChange }) => {
   const [landingLocation, setLandingLocation] = useState(null);
   const [showLayers, setShowLayers] = useState(true);
+  const [previousYear, setPreviousYear] = useState(selectedYear);
   const mapRef = useRef(null);
 
   // Center on Quebec/New France region
@@ -112,6 +153,17 @@ const InteractiveVoyageMap = ({ onLandingSelect, selectedYear, onYearChange }) =
   const mapZoom = 6;
 
   const territories = getTerritoriesByYear(selectedYear);
+
+  // Update previous year when year changes (for transitions)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (previousYear !== selectedYear) {
+        setPreviousYear(selectedYear);
+      }
+    }, 50); // Small delay to allow transition to start
+    
+    return () => clearTimeout(timer);
+  }, [selectedYear]);
 
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
@@ -135,48 +187,6 @@ const InteractiveVoyageMap = ({ onLandingSelect, selectedYear, onYearChange }) =
     }
     return `Position: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   };
-
-  const territoryStyle = (feature) => {
-    return {
-      fillColor: feature.properties.color,
-      fillOpacity: 0.3,
-      color: feature.properties.color,
-      weight: 2,
-      opacity: 0.8,
-    };
-  };
-
-  const onEachTerritory = (feature, layer) => {
-    layer.on({
-      mouseover: (e) => {
-        const layer = e.target;
-        layer.setStyle({
-          fillOpacity: 0.5,
-          weight: 3,
-        });
-      },
-      mouseout: (e) => {
-        const layer = e.target;
-        layer.setStyle({
-          fillOpacity: 0.3,
-          weight: 2,
-        });
-      },
-    });
-
-    layer.bindPopup(`
-      <div style="font-family: sans-serif;">
-        <strong>${feature.properties.name}</strong><br/>
-        <small>Pouvoir: ${feature.properties.power}</small>
-      </div>
-    `);
-  };
-
-  const years = [];
-  for (let year = 1500; year <= 1760; year += 10) {
-    years.push(year);
-  }
-  years.push(1760); // Add final year
 
   return (
     <div className="space-y-4">
@@ -256,15 +266,14 @@ const InteractiveVoyageMap = ({ onLandingSelect, selectedYear, onYearChange }) =
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {/* Territory Layers */}
-            {showLayers && territories.map((territory, index) => (
-              <GeoJSON
-                key={index}
-                data={territory}
-                style={territoryStyle}
-                onEachFeature={onEachTerritory}
+            {/* Territory Layers with Smooth Transitions */}
+            {showLayers && (
+              <TerritoryLayer 
+                territories={territories} 
+                year={selectedYear}
+                previousYear={previousYear}
               />
-            ))}
+            )}
 
             {/* Landing Location Marker */}
             {landingLocation && (
