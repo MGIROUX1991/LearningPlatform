@@ -12,6 +12,7 @@ export const getTerritoriesByYear = (year) => {
       type: 'Polygon',
       coordinates: [[
         // Follows St. Lawrence River and Ottawa River
+        // Format: [longitude, latitude] - must close the polygon
         [-79.5, 45.0], // West of Montreal
         [-75.0, 45.0], // Along St. Lawrence
         [-70.0, 46.5], // Quebec City area
@@ -21,7 +22,7 @@ export const getTerritoriesByYear = (year) => {
         [-70.0, 45.0], // Back to Montreal area
         [-75.0, 44.5], // South along Ottawa River
         [-79.5, 44.5], // Back to start
-        [-79.5, 45.0]
+        [-79.5, 45.0]  // Close polygon
       ]]
     }
   };

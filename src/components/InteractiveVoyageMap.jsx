@@ -65,7 +65,25 @@ const onEachTerritory = (feature, layer) => {
 const TerritoryLayer = ({ territories, year, previousYear }) => {
   const [displayTerritories, setDisplayTerritories] = useState(territories);
   const [transitionProgress, setTransitionProgress] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(null);
   const transitionRef = useRef(null);
+  const map = useMap();
+
+  // Track zoom level to force re-render and prevent distortion
+  useEffect(() => {
+    const updateZoom = () => {
+      setZoomLevel(map.getZoom());
+    };
+
+    map.on('zoomend', updateZoom);
+    map.on('zoom', updateZoom);
+    updateZoom(); // Initial zoom level
+
+    return () => {
+      map.off('zoomend', updateZoom);
+      map.off('zoom', updateZoom);
+    };
+  }, [map]);
 
   useEffect(() => {
     if (previousYear !== year) {
@@ -127,7 +145,7 @@ const TerritoryLayer = ({ territories, year, previousYear }) => {
         
         return (
           <GeoJSON
-            key={`${territory.properties.name}-${year}-${index}`}
+            key={`${territory.properties.name}-${year}-${index}-${zoomLevel || 'initial'}`}
             data={territory}
             style={{
               ...style,
@@ -135,6 +153,15 @@ const TerritoryLayer = ({ territories, year, previousYear }) => {
               opacity: Math.min(transitionProgress + 0.3, 1),
             }}
             onEachFeature={onEachTerritory}
+            eventHandlers={{
+              add: (e) => {
+                // Force proper rendering when layer is added
+                const layer = e.target;
+                if (layer && layer.redraw) {
+                  setTimeout(() => layer.redraw(), 0);
+                }
+              }
+            }}
           />
         );
       })}
@@ -264,6 +291,8 @@ const InteractiveVoyageMap = ({ onLandingSelect, selectedYear, onYearChange }) =
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              updateWhenZooming={true}
+              updateWhenIdle={true}
             />
 
             {/* Territory Layers with Smooth Transitions */}
