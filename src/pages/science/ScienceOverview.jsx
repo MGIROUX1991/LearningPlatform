@@ -1,14 +1,51 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FlaskConical, BookOpen, GraduationCap, Star } from 'lucide-react';
+import { FlaskConical, BookOpen, GraduationCap, Star, CheckCircle2, Circle, Clock } from 'lucide-react';
 import { lessonService } from '../../services/adminService';
 import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
 import { getFrenchYears, getFrenchYearName, getEnglishYearName } from '../../utils/yearTranslations';
+import { useApp } from '../../context/AppContext';
 
 const ScienceOverview = () => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState('Secondaire I');
+  const { progress } = useApp();
+
+  // Get lesson status helper function
+  const getLessonStatus = (lesson) => {
+    const lessonId = lesson.id || lesson.chapter_id || 'introduction-methode-scientifique';
+    const completedLessons = progress?.science?.completedLessons || {};
+    const isCompleted = completedLessons[lessonId] === true;
+    
+    // Check if lesson was visited (in progress) using localStorage
+    const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
+    const isVisited = visitedLessons[`science_${lessonId}`] === true;
+    
+    if (isCompleted) {
+      return 'completed';
+    } else if (isVisited) {
+      return 'in-progress';
+    } else {
+      return 'not-started';
+    }
+  };
+
+  // Mark lesson as visited when component mounts
+  useEffect(() => {
+    const markVisited = (lessonId) => {
+      const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
+      visitedLessons[`science_${lessonId}`] = true;
+      localStorage.setItem('visited_lessons', JSON.stringify(visitedLessons));
+    };
+
+    // Check if we're coming from a lesson page
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromLesson = urlParams.get('from');
+    if (fromLesson) {
+      markVisited(fromLesson);
+    }
+  }, []);
 
   useEffect(() => {
       const loadLessons = async () => {
@@ -106,12 +143,29 @@ const ScienceOverview = () => {
                 {chapterId.replace(/-/g, ' ')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {chapterLessons.map((lesson) => (
+                {chapterLessons.map((lesson) => {
+                  const lessonId = lesson.id || lesson.chapter_id || 'introduction-methode-scientifique';
+                  const status = getLessonStatus(lesson);
+                  
+                  return (
                   <div
                     key={lesson.id}
-                    className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all"
+                    className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all relative"
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    {/* Status Indicator */}
+                    <div className="absolute top-4 right-4">
+                      {status === 'completed' && (
+                        <CheckCircle2 className="w-6 h-6 text-green-500" title="Leçon complétée" />
+                      )}
+                      {status === 'in-progress' && (
+                        <Clock className="w-6 h-6 text-yellow-500" title="Leçon en cours" />
+                      )}
+                      {status === 'not-started' && (
+                        <Circle className="w-6 h-6 text-gray-500" title="Leçon non commencée" />
+                      )}
+                    </div>
+                    
+                    <div className="flex items-start justify-between mb-2 pr-8">
                       <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
                       {lesson.school_year && (
                         <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
@@ -142,14 +196,20 @@ const ScienceOverview = () => {
                         {lesson.xp_reward} XP
                       </span>
                       <Link
-                        to={`/science/lesson/${lesson.id || lesson.chapter_id || 'introduction-methode-scientifique'}`}
+                        to={`/science/lesson/${lessonId}`}
+                        onClick={() => {
+                          // Mark lesson as visited when clicking
+                          const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
+                          visitedLessons[`science_${lessonId}`] = true;
+                          localStorage.setItem('visited_lessons', JSON.stringify(visitedLessons));
+                        }}
                         className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all text-sm"
                       >
-                        Commencer
+                        {status === 'completed' ? 'Revoir' : status === 'in-progress' ? 'Continuer' : 'Commencer'}
                       </Link>
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
             </div>
           ))}

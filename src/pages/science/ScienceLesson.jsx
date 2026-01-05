@@ -283,6 +283,15 @@ const ScienceLesson = () => {
     },
   };
 
+  // Mark lesson as visited
+  useEffect(() => {
+    if (lessonId) {
+      const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
+      visitedLessons[`science_${lessonId}`] = true;
+      localStorage.setItem('visited_lessons', JSON.stringify(visitedLessons));
+    }
+  }, [lessonId]);
+
   // Load lesson from database
   useEffect(() => {
     const loadLesson = async () => {
