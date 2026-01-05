@@ -304,7 +304,7 @@ const ScienceLesson = () => {
             {/* Steps Grid - Full Width */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {scientificSteps.map((step) => {
                   const Icon = step.icon;
                   const isSelected = selectedStep === step.id || (!selectedStep && step.id === 'observation');
