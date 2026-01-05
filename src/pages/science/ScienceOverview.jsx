@@ -141,9 +141,12 @@ const ScienceOverview = () => {
                       <span className="text-yellow-400 text-sm font-semibold">
                         {lesson.xp_reward} XP
                       </span>
-                      <button className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all text-sm">
+                      <Link
+                        to={`/science/lesson/${lesson.id || lesson.chapter_id || 'introduction-methode-scientifique'}`}
+                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all text-sm"
+                      >
                         Commencer
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 ))}

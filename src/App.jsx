@@ -10,6 +10,7 @@ import MathOverview from './pages/math/MathOverview';
 import MathSkillTree from './pages/math/MathSkillTree';
 import MathProblemSolver from './pages/math/MathProblemSolver';
 import ScienceOverview from './pages/science/ScienceOverview';
+import ScienceLesson from './pages/science/ScienceLesson';
 import CurriculumOverview from './components/CurriculumOverview';
 import Auth from './components/Auth';
 import PasswordReset from './components/PasswordReset';
@@ -158,6 +159,16 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <ScienceOverview />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/science/lesson/:lessonId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ScienceLesson />
                   </Layout>
                 </ProtectedRoute>
               }
