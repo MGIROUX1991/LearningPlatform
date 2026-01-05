@@ -544,7 +544,6 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
                       />
                       <div className="flex-1">
                         <div className="text-white font-semibold text-sm">{competency.name}</div>
-                        <div className="text-gray-400 text-xs mt-1">{competency.description}</div>
                       </div>
                     </label>
                   );

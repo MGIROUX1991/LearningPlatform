@@ -193,7 +193,6 @@ const CurriculumOverview = () => {
                     <span className="text-2xl sm:text-3xl flex-shrink-0">{getSubjectIcon(subject.category)}</span>
                     <div className="min-w-0 flex-1">
                       <h3 className="text-base sm:text-lg font-bold text-white truncate">{subject.name}</h3>
-                      <p className="text-xs sm:text-sm text-gray-400 truncate">{subject.englishName}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 flex-shrink-0">

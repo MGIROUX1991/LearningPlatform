@@ -44,7 +44,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'reading',
           name: 'Lire et apprécier des textes variés',
-          description: 'Read and appreciate various texts',
+          description: 'Lire et apprécier des textes variés',
           skills: [
             'Compréhension de textes littéraires et informatifs',
             'Analyse et interprétation de textes',
@@ -55,7 +55,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'writing',
           name: 'Écrire des textes variés',
-          description: 'Write various texts',
+          description: 'Écrire des textes variés',
           skills: [
             'Écriture pour différents buts et publics',
             'Planification et organisation de textes',
@@ -66,7 +66,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'oral',
           name: 'Communiquer oralement',
-          description: 'Communicate orally',
+          description: 'Communiquer oralement',
           skills: [
             'Expression orale et présentation',
             'Écoute active',
@@ -104,7 +104,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'reinvest',
           name: 'Réinvestir sa compréhension de textes',
-          description: 'Reinvest understanding of texts',
+          description: 'Réinvestir sa compréhension de textes',
           skills: [
             'Compréhension de lecture',
             'Analyse de textes',
@@ -115,7 +115,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'write',
           name: 'Écrire des textes',
-          description: 'Write texts',
+          description: 'Écrire des textes',
           skills: [
             'Écriture en anglais',
             'Grammaire et vocabulaire',
@@ -126,7 +126,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'interact',
           name: 'Interagir en anglais',
-          description: 'Interact in English',
+          description: 'Interagir en anglais',
           skills: [
             'Communication orale',
             'Compréhension auditive',
@@ -164,7 +164,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'solve',
           name: 'Résoudre une situation-problème',
-          description: 'Solve situational problems',
+          description: 'Résoudre une situation-problème',
           skills: [
             'Identification et analyse de problèmes',
             'Modélisation mathématique',
@@ -175,7 +175,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'reason',
           name: 'Utiliser un raisonnement mathématique',
-          description: 'Use mathematical reasoning',
+          description: 'Utiliser un raisonnement mathématique',
           skills: [
             'Raisonnement logique',
             'Formulation de conjectures',
@@ -186,7 +186,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'communicate',
           name: 'Communiquer à l\'aide du langage mathématique',
-          description: 'Communicate using mathematical language',
+          description: 'Communiquer à l\'aide du langage mathématique',
           skills: [
             'Notation mathématique',
             'Représentation graphique',
@@ -261,7 +261,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'seek',
           name: 'Chercher des réponses ou des solutions à des problèmes',
-          description: 'Seek answers or solutions to problems',
+          description: 'Chercher des réponses ou des solutions à des problèmes',
           skills: [
             'Démarche scientifique',
             'Formation d\'hypothèses',
@@ -272,7 +272,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'make',
           name: 'Mettre à profit ses connaissances scientifiques',
-          description: 'Make use of scientific knowledge',
+          description: 'Mettre à profit ses connaissances scientifiques',
           skills: [
             'Application de concepts scientifiques',
             'Compréhension des principes scientifiques',
@@ -283,7 +283,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'communicate',
           name: 'Communiquer à l\'aide des langages scientifiques',
-          description: 'Communicate using scientific languages',
+          description: 'Communiquer à l\'aide des langages scientifiques',
           skills: [
             'Rédaction scientifique',
             'Représentation graphique',
@@ -347,7 +347,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'characterize',
           name: 'Caractériser une période de l\'histoire du Québec et du Canada',
-          description: 'Characterize a period in the history of Quebec and Canada',
+          description: 'Caractériser une période de l\'histoire du Québec et du Canada',
           skills: [
             'Identification de périodes historiques',
             'Compréhension du contexte historique',
@@ -358,7 +358,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'interpret',
           name: 'Interpréter une réalité sociale à l\'aide de la méthode historique',
-          description: 'Interpret a social reality using historical method',
+          description: 'Interpréter une réalité sociale à l\'aide de la méthode historique',
           skills: [
             'Analyse de sources historiques',
             'Pensée critique',
@@ -369,7 +369,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'construct',
           name: 'Construire sa conscience citoyenne à l\'aide de l\'histoire',
-          description: 'Construct citizenship consciousness using history',
+          description: 'Construire sa conscience citoyenne à l\'aide de l\'histoire',
           skills: [
             'Compréhension de la citoyenneté',
             'Lien entre passé et présent',
@@ -430,7 +430,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'read',
           name: 'Lire l\'organisation d\'un territoire',
-          description: 'Read the organization of a territory',
+          description: 'Lire l\'organisation d\'un territoire',
           skills: [
             'Analyse spatiale',
             'Lecture de cartes',
@@ -441,7 +441,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'interpret',
           name: 'Interpréter un enjeu territorial',
-          description: 'Interpret a territorial issue',
+          description: 'Interpréter un enjeu territorial',
           skills: [
             'Analyse d\'enjeux territoriaux',
             'Compréhension environnementale',
@@ -452,7 +452,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'construct',
           name: 'Construire sa conscience du monde',
-          description: 'Construct awareness of the world',
+          description: 'Construire sa conscience du monde',
           skills: [
             'Conscience mondiale',
             'Compréhension culturelle',
@@ -486,7 +486,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'create',
           name: 'Créer des images médiatiques',
-          description: 'Create media images',
+          description: 'Créer des images médiatiques',
           skills: [
             'Création artistique',
             'Utilisation de techniques artistiques',
@@ -497,7 +497,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'appreciate',
           name: 'Apprécier des œuvres d\'art',
-          description: 'Appreciate works of art',
+          description: 'Apprécier des œuvres d\'art',
           skills: [
             'Analyse artistique',
             'Appréciation esthétique',
@@ -535,7 +535,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'perform',
           name: 'Réaliser une activité physique',
-          description: 'Perform a physical activity',
+          description: 'Réaliser une activité physique',
           skills: [
             'Habiletés motrices',
             'Condition physique',
@@ -546,7 +546,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'interact',
           name: 'Interagir dans divers contextes',
-          description: 'Interact in various contexts',
+          description: 'Interagir dans divers contextes',
           skills: [
             'Travail d\'équipe',
             'Esprit sportif',
@@ -557,7 +557,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'adopt',
           name: 'Adopter un mode de vie sain et actif',
-          description: 'Adopt a healthy and active lifestyle',
+          description: 'Adopter un mode de vie sain et actif',
           skills: [
             'Conscience de la santé',
             'Choix de mode de vie',
@@ -596,7 +596,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'understand',
           name: 'Comprendre la culture québécoise',
-          description: 'Understand Quebec culture',
+          description: 'Comprendre la culture québécoise',
           skills: [
             'Conscience culturelle',
             'Identité québécoise',
@@ -607,7 +607,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'participate',
           name: 'Participer à la vie démocratique',
-          description: 'Participate in democratic life',
+          description: 'Participer à la vie démocratique',
           skills: [
             'Engagement civique',
             'Valeurs démocratiques',
@@ -633,7 +633,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'understand',
           name: 'Comprendre le monde contemporain',
-          description: 'Understand the contemporary world',
+          description: 'Comprendre le monde contemporain',
           skills: [
             'Analyse d\'enjeux mondiaux',
             'Compréhension de l\'actualité',
@@ -659,7 +659,7 @@ export const QUEBEC_CURRICULUM = {
         {
           id: 'manage',
           name: 'Gérer ses finances personnelles',
-          description: 'Manage personal finances',
+          description: 'Gérer ses finances personnelles',
           skills: [
             'Établissement de budget',
             'Planification financière',
