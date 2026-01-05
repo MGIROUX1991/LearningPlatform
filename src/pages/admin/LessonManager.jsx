@@ -4,6 +4,7 @@ import { useAdmin } from '../../context/AdminContext';
 import { lessonService } from '../../services/adminService';
 import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
 import { Plus, Edit, Trash2, BookOpen, ArrowLeft, CheckCircle, XCircle, GraduationCap, Target } from 'lucide-react';
+import { getFrenchYears, getFrenchYearName } from '../../utils/yearTranslations';
 
 const LessonManager = () => {
   const { isAdmin, loading: adminLoading } = useAdmin();
@@ -167,11 +168,11 @@ const LessonManager = () => {
               style={{ color: '#ffffff' }}
             >
               <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Toutes les années</option>
-              <option value="Secondary I" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary I</option>
-              <option value="Secondary II" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary II</option>
-              <option value="Secondary III" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary III</option>
-              <option value="Secondary IV" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary IV</option>
-              <option value="Secondary V" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondary V</option>
+              <option value="Secondary I" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondaire I</option>
+              <option value="Secondary II" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondaire II</option>
+              <option value="Secondary III" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondaire III</option>
+              <option value="Secondary IV" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondaire IV</option>
+              <option value="Secondary V" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Secondaire V</option>
             </select>
           </div>
 
@@ -263,7 +264,7 @@ const LessonManager = () => {
                         {lesson.school_year && (
                           <span className="inline-flex items-center space-x-1 px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-semibold">
                             <GraduationCap className="w-3 h-3" />
-                            <span>{lesson.school_year}</span>
+                            <span>{getFrenchYearName(lesson.school_year)}</span>
                           </span>
                         )}
                         {lesson.competencies && lesson.competencies.length > 0 && (
@@ -496,7 +497,7 @@ const LessonEditor = ({ lesson, subjectId, chapterId, onSave, onCancel }) => {
               <option value="" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Sélectionner une année</option>
               {schoolYears.map((year) => (
                 <option key={year} value={year} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
-                  {year}
+                  {getFrenchYearName(year)}
                 </option>
               ))}
             </select>

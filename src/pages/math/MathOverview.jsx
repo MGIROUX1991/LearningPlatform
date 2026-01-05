@@ -3,31 +3,34 @@ import { Link } from 'react-router-dom';
 import { Calculator, BookOpen, GraduationCap, Star } from 'lucide-react';
 import { lessonService } from '../../services/adminService';
 import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
+import { getFrenchYears, getFrenchYearName, getEnglishYearName } from '../../utils/yearTranslations';
 
 const MathOverview = () => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedYear, setSelectedYear] = useState('Secondary I');
+  const [selectedYear, setSelectedYear] = useState('Secondaire I');
 
   useEffect(() => {
-    const loadLessons = async () => {
-      setLoading(true);
-      try {
-        const data = await lessonService.getLessons('math', null, {
-          school_year: selectedYear,
-        });
-        setLessons(data);
-      } catch (error) {
-        console.error('Error loading math lessons:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const loadLessons = async () => {
+        setLoading(true);
+        try {
+          // Convert French year name to English for API call
+          const englishYear = getEnglishYearName(selectedYear);
+          const data = await lessonService.getLessons('math', null, {
+            school_year: englishYear,
+          });
+          setLessons(data);
+        } catch (error) {
+          console.error('Error loading math lessons:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
     loadLessons();
   }, [selectedYear]);
 
   const mathSubject = QUEBEC_CURRICULUM.subjects.mathematics;
-  const years = ['Secondary I', 'Secondary II', 'Secondary III', 'Secondary IV', 'Secondary V'];
+  const years = getFrenchYears();
 
   // Group lessons by chapter
   const lessonsByChapter = lessons.reduce((acc, lesson) => {
@@ -48,7 +51,6 @@ const MathOverview = () => {
             {mathSubject.name}
           </h1>
         </div>
-        <p className="text-gray-300">{mathSubject.englishName}</p>
       </div>
 
       {/* Year Selector */}
@@ -78,7 +80,6 @@ const MathOverview = () => {
           {mathSubject.competencies.map((comp) => (
             <div key={comp.id} className="bg-white/5 rounded-xl p-4">
               <h3 className="text-white font-semibold mb-2">{comp.name}</h3>
-              <p className="text-gray-400 text-sm">{comp.description}</p>
             </div>
           ))}
         </div>
@@ -114,7 +115,7 @@ const MathOverview = () => {
                       <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
                       {lesson.school_year && (
                         <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
-                          {lesson.school_year}
+                          {getFrenchYearName(lesson.school_year)}
                         </span>
                       )}
                     </div>

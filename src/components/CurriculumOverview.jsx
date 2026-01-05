@@ -4,16 +4,18 @@ import { BookOpen, GraduationCap, CheckCircle, Clock, Star } from 'lucide-react'
 import { QUEBEC_CURRICULUM, getMandatorySubjects } from '../data/quebecCurriculum';
 import { favoritesService } from '../services/favoritesService';
 import { useSupabase } from '../context/SupabaseContext';
+import { getFrenchYears, getFrenchYearName, getEnglishYearName } from '../utils/yearTranslations';
 
 const CurriculumOverview = () => {
   const { user } = useSupabase();
-  const [selectedYear, setSelectedYear] = useState('Secondary I');
+  const [selectedYear, setSelectedYear] = useState('Secondaire I');
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [favoriteStatus, setFavoriteStatus] = useState({});
 
-  const years = ['Secondary I', 'Secondary II', 'Secondary III', 'Secondary IV', 'Secondary V'];
-  const mandatorySubjects = getMandatorySubjects(selectedYear);
+  const years = getFrenchYears();
+  // Convert French year to English for getMandatorySubjects function
+  const mandatorySubjects = getMandatorySubjects(getEnglishYearName(selectedYear));
 
   // Load favorites
   useEffect(() => {
@@ -123,7 +125,7 @@ const CurriculumOverview = () => {
         <h2 className="text-lg sm:text-xl font-bold text-white mb-4">Sélectionner une année</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           {years.map((year) => {
-            const isCycleOne = ['Secondary I', 'Secondary II'].includes(year);
+            const isCycleOne = ['Secondaire I', 'Secondaire II'].includes(year);
             return (
               <button
                 key={year}
