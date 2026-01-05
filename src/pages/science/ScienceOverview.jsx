@@ -129,9 +129,9 @@ const ScienceOverview = () => {
                           return comp ? (
                             <span
                               key={compId}
-                              className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs"
+                              className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs whitespace-nowrap"
                             >
-                              {comp.name.substring(0, 20)}...
+                              {comp.name}
                             </span>
                           ) : null;
                         })}
