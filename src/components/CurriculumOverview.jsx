@@ -251,7 +251,6 @@ const CurriculumOverview = () => {
                       {subject.competencies.map((comp) => (
                         <div key={comp.id} className="bg-white/5 rounded p-2 sm:p-3">
                           <div className="text-white font-medium text-xs sm:text-sm break-words">{comp.name}</div>
-                          <div className="text-gray-400 text-xs mt-1 break-words">{comp.description}</div>
                           <div className="mt-2 space-y-1">
                             {comp.skills.map((skill, idx) => (
                               <div key={idx} className="text-xs text-gray-500 flex items-start space-x-1">

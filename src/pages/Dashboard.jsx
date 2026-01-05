@@ -302,13 +302,10 @@ const Dashboard = () => {
                                 <div className="text-white font-semibold mb-1">
                                   {competency.name}
                                 </div>
-                                <div className="text-gray-400 text-sm mb-2 italic">
-                                  {competency.description}
-                                </div>
                                 {competency.skills && competency.skills.length > 0 && (
                                   <div className="mt-3 space-y-1">
                                     <div className="text-xs text-gray-500 font-semibold uppercase mb-2">
-                                      Habiletés / Skills:
+                                      Habiletés:
                                     </div>
                                     <ul className="space-y-1">
                                       {competency.skills.map((skill, skillIdx) => (
