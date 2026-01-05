@@ -17,6 +17,7 @@ const Layout = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
   const modulesMenuRef = useRef(null);
   const userMenuRef = useRef(null);
+  const { user: supabaseUser } = useSupabase();
 
   const handleSignOut = async () => {
     try {
@@ -25,6 +26,23 @@ const Layout = ({ children }) => {
       console.error('Error signing out:', error);
     }
   };
+
+  // Load favorites when user is available
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (supabaseUser) {
+        try {
+          const favs = await favoritesService.getUserFavorites();
+          setFavorites(favs);
+        } catch (error) {
+          console.error('Error loading favorites:', error);
+        }
+      } else {
+        setFavorites([]);
+      }
+    };
+    loadFavorites();
+  }, [supabaseUser]);
 
   // Close dropdown menus when clicking outside
   useEffect(() => {
@@ -46,10 +64,9 @@ const Layout = ({ children }) => {
     };
   }, [modulesMenuOpen, userMenuOpen]);
 
-  const moduleItems = [
-    { path: '/history', icon: BookOpen, label: 'Histoire' },
-    { path: '/math', icon: Calculator, label: 'Mathématiques' },
-  ];
+  // Only show hardcoded modules if they're not in favorites
+  // This prevents duplicates - favorites will show separately
+  const moduleItems = [];
 
   const isModuleActive = moduleItems.some(item => 
     location.pathname === item.path || 

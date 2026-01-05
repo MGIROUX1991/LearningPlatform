@@ -1,155 +1,161 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useApp } from '../../context/AppContext';
-import { Lock, Unlock, CheckCircle, Clock } from 'lucide-react';
+import { BookOpen, GraduationCap, Star } from 'lucide-react';
+import { lessonService } from '../../services/adminService';
+import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
 
 const HistoryOverview = () => {
-  const { progress } = useApp();
+  const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedYear, setSelectedYear] = useState('Secondary I');
 
-  const chapters = [
-    {
-      id: 'chapter1',
-      title: 'Les Grands Explorateurs',
-      description: 'Découvrez les premiers explorateurs européens qui ont navigué vers le Nouveau Monde',
-      year: '1497-1534',
-      unlocked: true, // First chapter is always unlocked
-    },
-    {
-      id: 'chapter2',
-      title: 'La Traversée',
-      description: 'Vivez l\'expérience de la traversée de l\'Atlantique',
-      year: '1534-1608',
-      unlocked: progress.history?.unlockedChapters?.includes('chapter2') || progress.history?.completedChapters?.includes('chapter1'),
-    },
-    {
-      id: 'chapter3',
-      title: 'Fondation de Québec',
-      description: 'Suivez la création de la première colonie permanente',
-      year: '1608',
-      unlocked: progress.history?.unlockedChapters?.includes('chapter3') || progress.history?.completedChapters?.includes('chapter2'),
-    },
-    {
-      id: 'chapter4',
-      title: 'La Vie Quotidienne',
-      description: 'Explorez la vie des colons en Nouvelle-France',
-      year: '1608-1663',
-      unlocked: progress.history?.unlockedChapters?.includes('chapter4') || progress.history?.completedChapters?.includes('chapter3'),
-    },
-    {
-      id: 'chapter5',
-      title: 'Relations avec les Autochtones',
-      description: 'Comprenez les interactions entre colons et peuples autochtones',
-      year: '1608-1760',
-      unlocked: progress.history?.unlockedChapters?.includes('chapter5') || progress.history?.completedChapters?.includes('chapter4'),
-    },
-  ];
+  useEffect(() => {
+    const loadLessons = async () => {
+      setLoading(true);
+      try {
+        const data = await lessonService.getLessons('history', null, {
+          school_year: selectedYear,
+        });
+        setLessons(data);
+      } catch (error) {
+        console.error('Error loading history lessons:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadLessons();
+  }, [selectedYear]);
 
-  const completedChapters = progress.history?.completedChapters || [];
+  const historySubject = QUEBEC_CURRICULUM.subjects.history;
+  const years = ['Secondary I', 'Secondary II', 'Secondary III', 'Secondary IV', 'Secondary V'];
+
+  // Group lessons by chapter
+  const lessonsByChapter = lessons.reduce((acc, lesson) => {
+    if (!acc[lesson.chapter_id]) {
+      acc[lesson.chapter_id] = [];
+    }
+    acc[lesson.chapter_id].push(lesson);
+    return acc;
+  }, {});
 
   return (
-    <div className="space-y-6 md:space-y-8 px-4 md:px-0">
-      <div className="text-center mb-8 md:mb-12">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-          Nouvelle-France
-        </h1>
-        <p className="text-gray-300 text-sm sm:text-base md:text-lg px-2">
-          Explorez l'histoire fascinante de la colonisation française en Amérique du Nord
-        </p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <div className="flex items-center justify-center space-x-3 mb-4">
+          <BookOpen className="w-8 h-8 text-blue-400" />
+          <h1 className="text-4xl font-bold text-white">
+            {historySubject.name}
+          </h1>
+        </div>
+        <p className="text-gray-300">{historySubject.englishName}</p>
       </div>
 
-      {/* Timeline Visualization */}
-      <div className="relative">
-        {/* Timeline Line - Hidden on mobile, visible on md+ */}
-        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-amber-600 via-orange-500 to-amber-600" style={{ height: 'calc(100% - 2rem)' }} />
-
-        <div className="space-y-8 md:space-y-12">
-          {chapters.map((chapter, index) => {
-            const isCompleted = completedChapters.includes(chapter.id);
-            const isUnlocked = chapter.unlocked;
-
-            return (
-              <div
-                key={chapter.id}
-                className={`relative flex flex-col md:flex-row items-center ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
-              >
-                {/* Timeline Node */}
-                <div className="absolute left-1/2 md:left-1/2 transform -translate-x-1/2 z-10">
-                  <div
-                    className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-4 flex items-center justify-center ${
-                      isCompleted
-                        ? 'bg-green-500 border-green-300'
-                        : isUnlocked
-                        ? 'bg-amber-500 border-amber-300'
-                        : 'bg-gray-600 border-gray-400'
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                    ) : isUnlocked ? (
-                      <Unlock className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                    ) : (
-                      <Lock className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                    )}
-                  </div>
-                </div>
-
-                {/* Chapter Card - Full width on mobile, 5/12 on desktop */}
-                <div className={`w-full md:w-5/12 ${index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'} mt-6 md:mt-0`}>
-                  <div
-                    className={`bg-gradient-to-br from-amber-900/40 to-orange-900/40 backdrop-blur-md rounded-2xl p-4 sm:p-6 border-2 transition-all ${
-                      isUnlocked
-                        ? 'border-amber-500/50 hover:border-amber-400 cursor-pointer hover:scale-105'
-                        : 'border-gray-600/50 opacity-60'
-                    }`}
-                  >
-                    <div className={`flex items-center space-x-2 mb-2 ${index % 2 === 0 ? 'md:justify-end' : ''}`}>
-                      <Clock className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                      <span className="text-amber-400 text-xs sm:text-sm font-semibold">{chapter.year}</span>
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{chapter.title}</h3>
-                    <p className="text-sm sm:text-base text-gray-300 mb-4">{chapter.description}</p>
-                    
-                    {isUnlocked ? (
-                      <Link
-                        to={`/history/lesson/${chapter.id}`}
-                        className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all text-sm sm:text-base"
-                      >
-                        <span>Commencer</span>
-                        <span>→</span>
-                      </Link>
-                    ) : (
-                      <div className="inline-flex items-center space-x-2 bg-gray-600 text-gray-400 px-4 sm:px-6 py-2 rounded-lg cursor-not-allowed text-sm sm:text-base">
-                        <Lock className="w-4 h-4" />
-                        <span>Verrouillé</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+      {/* Year Selector */}
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
+        <h2 className="text-xl font-bold text-white mb-4">Sélectionner une année</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {years.map((year) => (
+            <button
+              key={year}
+              onClick={() => setSelectedYear(year)}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                selectedYear === year
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 border-blue-400 text-white'
+                  : 'bg-blue-600/20 border-blue-500/50 text-white hover:bg-blue-600/30'
+              }`}
+            >
+              <div className="font-semibold">{year}</div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Quick Access to Journal */}
-      <div className="mt-8 md:mt-12 bg-gradient-to-br from-amber-900/40 to-orange-900/40 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-amber-500/50">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">Journal de Bord</h2>
-        <p className="text-sm sm:text-base text-gray-300 mb-6">
-          Tenez votre propre journal de bord comme si vous étiez à bord d'un navire traversant l'Atlantique.
-          Faites des choix qui affectent votre voyage et débloquez différentes branches de l'histoire.
-        </p>
-        <Link
-          to="/history/journal"
-          className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 transition-all text-base sm:text-lg font-semibold"
-        >
-          <span>Ouvrir le Journal</span>
-          <span>→</span>
-        </Link>
+      {/* Competencies */}
+      <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20">
+        <h2 className="text-xl font-bold text-white mb-4">Compétences</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {historySubject.competencies.map((comp) => (
+            <div key={comp.id} className="bg-white/5 rounded-xl p-4">
+              <h3 className="text-white font-semibold mb-2">{comp.name}</h3>
+              <p className="text-gray-400 text-sm">{comp.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Lessons by Chapter */}
+      {loading ? (
+        <div className="text-center text-gray-400 py-8">Chargement des leçons...</div>
+      ) : Object.keys(lessonsByChapter).length === 0 ? (
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-8 border border-blue-500/20 text-center">
+          <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <p className="text-gray-400">
+            Aucune leçon disponible pour {selectedYear}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {Object.entries(lessonsByChapter).map(([chapterId, chapterLessons]) => (
+            <div
+              key={chapterId}
+              className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20"
+            >
+              <h2 className="text-2xl font-bold text-white mb-4 capitalize">
+                {chapterId.replace(/-/g, ' ')}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {chapterLessons.map((lesson) => (
+                  <div
+                    key={lesson.id}
+                    className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
+                      {lesson.school_year && (
+                        <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+                          {lesson.school_year}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                      {lesson.content.substring(0, 100)}...
+                    </p>
+                    {lesson.competencies && lesson.competencies.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {lesson.competencies.map((compId) => {
+                          const comp = historySubject.competencies.find(c => c.id === compId);
+                          return comp ? (
+                            <span
+                              key={compId}
+                              className="px-2 py-1 bg-green-500/20 text-green-300 rounded text-xs"
+                            >
+                              {comp.name.substring(0, 20)}...
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-yellow-400 text-sm font-semibold">
+                        {lesson.xp_reward} XP
+                      </span>
+                      <Link
+                        to={`/history/lesson/${lesson.chapter_id || lesson.id}`}
+                        className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all text-sm"
+                      >
+                        Commencer
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default HistoryOverview;
-
