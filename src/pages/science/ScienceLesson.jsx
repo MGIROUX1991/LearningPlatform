@@ -280,83 +280,76 @@ const ScienceLesson = () => {
             {/* Intro Text */}
             {currentPage === 0 && (
               <div className="mb-8">
-                <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl">
-                  {currentPageData.content}
+                <p className="text-base md:text-lg text-gray-300 leading-relaxed">
+                  La science est une façon d'explorer et de comprendre le monde qui nous entoure. Les scientifiques utilisent une méthode systématique appelée "méthode scientifique" pour répondre à des questions et résoudre des problèmes.
                 </p>
               </div>
             )}
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              {/* Steps Grid - 2 columns */}
-              <div className="lg:col-span-2">
-                <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {scientificSteps.map((step) => {
-                    const Icon = step.icon;
-                    const isSelected = selectedStep === step.id || (!selectedStep && step.id === 'observation');
-                    
-                    return (
-                      <button
-                        key={step.id}
-                        onClick={() => setSelectedStep(step.id)}
-                        className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
-                          isSelected
-                            ? `${step.bgColor} ${step.borderColor} border-opacity-60 shadow-lg`
-                            : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
-                        }`}
-                      >
-                        <div className="flex items-start space-x-4">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${step.color} flex-shrink-0`}>
-                            <Icon className="w-6 h-6 text-white" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-lg font-bold text-white mb-1">{step.title}</h3>
-                            <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Example Box */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6 h-fit">
-                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
-                    <FlaskConical className="w-5 h-5" />
-                    <span>{selectedStepData.example.title}</span>
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="bg-slate-900/50 rounded-xl p-6 text-center border border-slate-700/50">
-                      <div className="text-4xl mb-2">{selectedStepData.example.illustration}</div>
-                      <p className="text-sm text-gray-400">Illustration</p>
-                    </div>
-                    <p className="text-gray-300 leading-relaxed text-sm">
-                      {selectedStepData.example.content}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Fun Fact Bubble - Floating */}
+            {/* Fun Fact - Full Width */}
             {currentPageData.funFact && (
-              <div className="fixed bottom-6 right-6 z-10 max-w-xs">
-                <div className="bg-gradient-to-br from-purple-500/90 to-pink-500/90 backdrop-blur-md rounded-full p-4 shadow-2xl border border-purple-400/30">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl">🧪</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white text-sm mb-1">Le saviez-vous?</div>
-                      <p className="text-white/90 text-xs leading-relaxed">{currentPageData.funFact}</p>
-                    </div>
+              <div className="mb-8 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-2xl border border-purple-400/30 p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-white text-lg mb-2">Le saviez-vous?</div>
+                    <p className="text-gray-200 leading-relaxed">{currentPageData.funFact}</p>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* Steps Grid - Full Width */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {scientificSteps.map((step) => {
+                  const Icon = step.icon;
+                  const isSelected = selectedStep === step.id || (!selectedStep && step.id === 'observation');
+                  
+                  return (
+                    <button
+                      key={step.id}
+                      onClick={() => setSelectedStep(step.id)}
+                      className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                        isSelected
+                          ? `${step.bgColor} ${step.borderColor} border-opacity-60 shadow-lg`
+                          : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                      }`}
+                    >
+                      <div className="flex items-start space-x-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${step.color} flex-shrink-0`}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-white mb-1">{step.title}</h3>
+                          <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Example Box - Separate Section */}
+            <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
+              <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
+                <FlaskConical className="w-5 h-5" />
+                <span>{selectedStepData.example.title}</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
+                  <div className="text-5xl mb-3">{selectedStepData.example.illustration}</div>
+                  <p className="text-sm text-gray-400">Illustration</p>
+                </div>
+                <p className="text-gray-300 leading-relaxed">
+                  {selectedStepData.example.content}
+                </p>
+              </div>
+            </div>
 
             {/* Footer Navigation */}
             <div className="mt-12 pt-8 border-t border-slate-700/50">
