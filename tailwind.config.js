@@ -22,6 +22,7 @@ export default {
       },
       fontFamily: {
         serif: ['Georgia', 'serif'],
+        'architects': ['Architects Daughter', 'cursive'],
       },
     },
   },
