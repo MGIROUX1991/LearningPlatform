@@ -230,15 +230,15 @@ const CurriculumOverview = () => {
                   </div>
                 </div>
 
-                {yearData && (
+                {yearData && yearData.hours !== undefined && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-gray-300">Heures:</span>
-                      <span className="text-white font-semibold">{yearData.hours || yearData.hours} h</span>
+                      <span className="text-white font-semibold">{yearData.hours} h</span>
                     </div>
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span className="text-gray-300">Crédits:</span>
-                      <span className="text-white font-semibold">{yearData.credits || yearData.credits} crédits</span>
+                      <span className="text-white font-semibold">{yearData.credits} crédits</span>
                     </div>
                   </div>
                 )}

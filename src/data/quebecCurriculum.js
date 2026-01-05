@@ -723,7 +723,8 @@ export const QUEBEC_CURRICULUM = {
 
 // Helper functions
 export const getSubjectByYear = (subjectId, year) => {
-  const subject = QUEBEC_CURRICULUM.subjects[subjectId];
+  // Find subject by ID (since IDs might not match object keys)
+  const subject = Object.values(QUEBEC_CURRICULUM.subjects).find(s => s.id === subjectId);
   if (!subject) return null;
 
   const yearMap = {
@@ -738,12 +739,15 @@ export const getSubjectByYear = (subjectId, year) => {
   if (!cycle) return null;
 
   if (cycle === 'cycleOne') {
+    if (!subject.cycles.cycleOne) return null;
     return {
       ...subject.cycles.cycleOne,
       isCycleOne: true,
     };
   }
 
+  if (!subject.cycles.cycleTwo || !subject.cycles.cycleTwo[cycle]) return null;
+  
   return {
     ...subject.cycles.cycleTwo[cycle],
     isCycleTwo: true,
