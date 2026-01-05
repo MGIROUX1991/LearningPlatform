@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { lessonService } from '../../services/adminService';
-import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles, FileText, Presentation, Image, Video, TrendingUp, Eye, Target } from 'lucide-react';
 
 const ScienceLesson = () => {
   const { lessonId } = useParams();
@@ -15,6 +15,7 @@ const ScienceLesson = () => {
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedStep, setSelectedStep] = useState(null);
+  const [selectedCommunication, setSelectedCommunication] = useState(null);
 
   // Scientific method steps with colors and icons
   const scientificSteps = [
@@ -104,6 +105,94 @@ const ScienceLesson = () => {
     },
   ];
 
+  // Communication scientifique aspects with colors and icons
+  const communicationAspects = [
+    {
+      id: 'formats',
+      title: 'Formats de communication',
+      description: 'Rapport écrit, présentation orale, affiche, vidéo',
+      icon: FileText,
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-500/10',
+      borderColor: 'border-blue-500/30',
+      example: {
+        title: 'Exemple de format',
+        content: 'Un rapport écrit permet de documenter en détail votre recherche, tandis qu\'une présentation orale est idéale pour partager vos découvertes avec un public.',
+        illustration: '📝📊'
+      }
+    },
+    {
+      id: 'structure',
+      title: 'Structure du rapport',
+      description: 'Introduction, méthodologie, résultats, discussion, conclusion',
+      icon: Presentation,
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-500/10',
+      borderColor: 'border-green-500/30',
+      example: {
+        title: 'Exemple de structure',
+        content: 'Chaque section a un rôle précis: l\'introduction présente le contexte, la méthodologie explique comment vous avez procédé, les résultats montrent vos données, la discussion les interprète, et la conclusion résume vos découvertes.',
+        illustration: '📑'
+      }
+    },
+    {
+      id: 'visuels',
+      title: 'Outils visuels',
+      description: 'Graphiques, tableaux, diagrammes pour présenter les données',
+      icon: BarChart3,
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/30',
+      example: {
+        title: 'Exemple d\'outil visuel',
+        content: 'Un graphique en barres peut montrer la croissance des plantes dans différentes conditions. Un bon graphique transmet plus d\'informations qu\'un long texte.',
+        illustration: '📈'
+      }
+    },
+    {
+      id: 'clarte',
+      title: 'Clarté',
+      description: 'Langage précis, éviter le jargon, expliquer les termes techniques',
+      icon: Eye,
+      color: 'from-teal-500 to-teal-600',
+      bgColor: 'bg-teal-500/10',
+      borderColor: 'border-teal-500/30',
+      example: {
+        title: 'Exemple de clarté',
+        content: 'Au lieu de dire "les organismes photosynthétiques", dites "les plantes". Utilisez des mots simples et expliquez les concepts complexes.',
+        illustration: '💬'
+      }
+    },
+    {
+      id: 'objectivite',
+      title: 'Objectivité',
+      description: 'Présenter les résultats tels qu\'ils sont, sans biais',
+      icon: Target,
+      color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-orange-500/10',
+      borderColor: 'border-orange-500/30',
+      example: {
+        title: 'Exemple d\'objectivité',
+        content: 'Même si vos résultats ne confirment pas votre hypothèse, présentez-les honnêtement. La science progresse grâce à la transparence.',
+        illustration: '🎯'
+      }
+    },
+    {
+      id: 'public',
+      title: 'Adapter au public',
+      description: 'Adapter le contenu et le langage selon votre auditoire',
+      icon: MessageSquare,
+      color: 'from-red-500 to-red-600',
+      bgColor: 'bg-red-500/10',
+      borderColor: 'border-red-500/30',
+      example: {
+        title: 'Exemple d\'adaptation',
+        content: 'Pour des élèves de votre âge, utilisez des exemples concrets et un langage accessible. Pour des scientifiques, vous pouvez utiliser plus de termes techniques.',
+        illustration: '👥'
+      }
+    },
+  ];
+
   // Fallback lesson content for "Introduction à la méthode scientifique"
   const fallbackLessonContent = {
     'introduction-methode-scientifique': {
@@ -144,6 +233,49 @@ const ScienceLesson = () => {
             id: 5,
             question: 'Qu\'est-ce qu\'une variable dans une expérience?',
             options: ['Une constante', 'Un facteur qui peut changer', 'Un résultat', 'Une hypothèse'],
+            correct: 1,
+          },
+        ],
+      },
+    },
+    'communiquer-resultats-scientifiques': {
+      title: 'Communiquer des résultats scientifiques',
+      pages: [
+        {
+          content: `Communiquer ses résultats scientifiques est une étape essentielle de la méthode scientifique. Après avoir mené une expérience et analysé les données, il est important de partager ses découvertes de manière claire et précise.`,
+          funFact: 'Saviez-vous que le premier article scientifique moderne a été publié en 1665 dans la revue "Philosophical Transactions"? Depuis, la communication scientifique est devenue un pilier de la recherche!',
+        },
+      ],
+      quiz: {
+        questions: [
+          {
+            id: 1,
+            question: 'Quelle est l\'étape essentielle après avoir mené une expérience?',
+            options: ['Oublier les résultats', 'Communiquer ses résultats', 'Refaire l\'expérience', 'Changer d\'hypothèse'],
+            correct: 1,
+          },
+          {
+            id: 2,
+            question: 'Qu\'est-ce qu\'un bon rapport scientifique doit contenir?',
+            options: ['Seulement des résultats', 'Introduction, méthodologie, résultats, discussion et conclusion', 'Seulement une conclusion', 'Des opinions personnelles'],
+            correct: 1,
+          },
+          {
+            id: 3,
+            question: 'Pourquoi les graphiques sont-ils importants dans la communication scientifique?',
+            options: ['Pour décorer le rapport', 'Pour présenter les données de manière visuelle et claire', 'Pour compliquer les choses', 'Pour utiliser plus d\'espace'],
+            correct: 1,
+          },
+          {
+            id: 4,
+            question: 'Quelle qualité est essentielle dans la communication scientifique?',
+            options: ['La subjectivité', 'L\'objectivité', 'L\'exagération', 'La simplification excessive'],
+            correct: 1,
+          },
+          {
+            id: 5,
+            question: 'Que doit-on faire si les résultats ne confirment pas l\'hypothèse initiale?',
+            options: ['Les cacher', 'Les présenter tels qu\'ils sont avec objectivité', 'Les modifier', 'Les ignorer'],
             correct: 1,
           },
         ],
@@ -249,7 +381,9 @@ const ScienceLesson = () => {
   };
 
   const currentPageData = lesson.pages[currentPage];
+  const isCommunicationLesson = lesson.title === 'Communiquer des résultats scientifiques' || lessonId === 'communiquer-resultats-scientifiques';
   const selectedStepData = selectedStep ? scientificSteps.find(s => s.id === selectedStep) : scientificSteps[0];
+  const selectedCommunicationData = selectedCommunication ? communicationAspects.find(c => c.id === selectedCommunication) : communicationAspects[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-architects">
@@ -281,7 +415,9 @@ const ScienceLesson = () => {
             {currentPage === 0 && (
               <div className="mb-8">
                 <p className="text-base md:text-lg text-gray-300 leading-relaxed">
-                  La science est une façon d'explorer et de comprendre le monde qui nous entoure. Les scientifiques utilisent une méthode systématique appelée "méthode scientifique" pour répondre à des questions et résoudre des problèmes.
+                  {isCommunicationLesson 
+                    ? 'Communiquer ses résultats scientifiques est une étape essentielle de la méthode scientifique. Après avoir mené une expérience et analysé les données, il est important de partager ses découvertes de manière claire et précise.'
+                    : 'La science est une façon d\'explorer et de comprendre le monde qui nous entoure. Les scientifiques utilisent une méthode systématique appelée "méthode scientifique" pour répondre à des questions et résoudre des problèmes.'}
                 </p>
               </div>
             )}
@@ -302,54 +438,109 @@ const ScienceLesson = () => {
             )}
 
             {/* Steps Grid - Full Width */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {scientificSteps.map((step) => {
-                  const Icon = step.icon;
-                  const isSelected = selectedStep === step.id || (!selectedStep && step.id === 'observation');
-                  
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => setSelectedStep(step.id)}
-                      className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
-                        isSelected
-                          ? `${step.bgColor} ${step.borderColor} border-opacity-60 shadow-lg`
-                          : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
-                      }`}
-                    >
-                      <div className="flex items-start space-x-4">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${step.color} flex-shrink-0`}>
-                          <Icon className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-bold text-white mb-1">{step.title}</h3>
-                          <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Example Box - Separate Section */}
-            <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
-              <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
-                <FlaskConical className="w-5 h-5" />
-                <span>{selectedStepData.example.title}</span>
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
-                  <div className="text-5xl mb-3">{selectedStepData.example.illustration}</div>
-                  <p className="text-sm text-gray-400">Illustration</p>
+            {isCommunicationLesson ? (
+              <>
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-6">Les aspects de la communication scientifique</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {communicationAspects.map((aspect) => {
+                      const Icon = aspect.icon;
+                      const isSelected = selectedCommunication === aspect.id || (!selectedCommunication && aspect.id === 'formats');
+                      
+                      return (
+                        <button
+                          key={aspect.id}
+                          onClick={() => setSelectedCommunication(aspect.id)}
+                          className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                            isSelected
+                              ? `${aspect.bgColor} ${aspect.borderColor} border-opacity-60 shadow-lg`
+                              : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                          }`}
+                        >
+                          <div className="flex items-start space-x-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${aspect.color} flex-shrink-0`}>
+                              <Icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-lg font-bold text-white mb-1">{aspect.title}</h3>
+                              <p className="text-sm text-gray-400 leading-relaxed">{aspect.description}</p>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
-                  {selectedStepData.example.content}
-                </p>
-              </div>
-            </div>
+
+                {/* Example Box - Separate Section */}
+                <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
+                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
+                    <MessageSquare className="w-5 h-5" />
+                    <span>{selectedCommunicationData.example.title}</span>
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
+                      <div className="text-5xl mb-3">{selectedCommunicationData.example.illustration}</div>
+                      <p className="text-sm text-gray-400">Illustration</p>
+                    </div>
+                    <p className="text-gray-300 leading-relaxed">
+                      {selectedCommunicationData.example.content}
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {scientificSteps.map((step) => {
+                      const Icon = step.icon;
+                      const isSelected = selectedStep === step.id || (!selectedStep && step.id === 'observation');
+                      
+                      return (
+                        <button
+                          key={step.id}
+                          onClick={() => setSelectedStep(step.id)}
+                          className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                            isSelected
+                              ? `${step.bgColor} ${step.borderColor} border-opacity-60 shadow-lg`
+                              : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                          }`}
+                        >
+                          <div className="flex items-start space-x-4">
+                            <div className={`p-3 rounded-xl bg-gradient-to-br ${step.color} flex-shrink-0`}>
+                              <Icon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-lg font-bold text-white mb-1">{step.title}</h3>
+                              <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Example Box - Separate Section */}
+                <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
+                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
+                    <FlaskConical className="w-5 h-5" />
+                    <span>{selectedStepData.example.title}</span>
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
+                      <div className="text-5xl mb-3">{selectedStepData.example.illustration}</div>
+                      <p className="text-sm text-gray-400">Illustration</p>
+                    </div>
+                    <p className="text-gray-300 leading-relaxed">
+                      {selectedStepData.example.content}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Footer Navigation */}
             <div className="mt-12 pt-8 border-t border-slate-700/50">
