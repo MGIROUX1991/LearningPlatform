@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { lessonService } from '../../services/adminService';
-import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles, FileText, Presentation, Image, Video, TrendingUp, Eye, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles, FileText, Presentation, Image, Video, TrendingUp, Eye, Target, TreePine, Fish, Leaf, Mushroom, Bug, Dna } from 'lucide-react';
 
 const ScienceLesson = () => {
   const { lessonId } = useParams();
@@ -16,6 +16,7 @@ const ScienceLesson = () => {
   const [loading, setLoading] = useState(true);
   const [selectedStep, setSelectedStep] = useState(null);
   const [selectedCommunication, setSelectedCommunication] = useState(null);
+  const [selectedKingdom, setSelectedKingdom] = useState(null);
 
   // Scientific method steps with colors and icons
   const scientificSteps = [
@@ -397,8 +398,70 @@ const ScienceLesson = () => {
 
   const currentPageData = lesson.pages[currentPage];
   const isCommunicationLesson = lesson.title === 'Communiquer des résultats scientifiques' || lessonId === 'communiquer-resultats-scientifiques';
+  const isClassificationLesson = lesson.title === 'Classification des êtres vivants' || lesson.chapter_id === 'living-things';
   const selectedStepData = selectedStep ? scientificSteps.find(s => s.id === selectedStep) : scientificSteps[0];
   const selectedCommunicationData = selectedCommunication ? communicationAspects.find(c => c.id === selectedCommunication) : communicationAspects[0];
+  
+  // Five kingdoms of life for classification lesson
+  const kingdoms = [
+    {
+      id: 'animaux',
+      title: 'Animaux',
+      icon: Fish,
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-500/10',
+      borderColor: 'border-blue-500/30',
+      emoji: '🦁',
+      description: 'Organismes multicellulaires qui se nourrissent d\'autres organismes',
+      examples: ['Lion', 'Aigle', 'Dauphin', 'Papillon']
+    },
+    {
+      id: 'vegetaux',
+      title: 'Végétaux',
+      icon: Leaf,
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-500/10',
+      borderColor: 'border-green-500/30',
+      emoji: '🌳',
+      description: 'Organismes qui fabriquent leur propre nourriture par photosynthèse',
+      examples: ['Chêne', 'Rose', 'Algue', 'Fougère']
+    },
+    {
+      id: 'champignons',
+      title: 'Champignons',
+      icon: Mushroom,
+      color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-orange-500/10',
+      borderColor: 'border-orange-500/30',
+      emoji: '🍄',
+      description: 'Organismes qui absorbent les nutriments de leur environnement',
+      examples: ['Champignon', 'Levure', 'Moisissure', 'Truffe']
+    },
+    {
+      id: 'protistes',
+      title: 'Protistes',
+      icon: Bug,
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/30',
+      emoji: '🦠',
+      description: 'Organismes unicellulaires avec un noyau (eucaryotes)',
+      examples: ['Amibe', 'Paramécie', 'Algue unicellulaire', 'Euglène']
+    },
+    {
+      id: 'bacteries',
+      title: 'Bactéries',
+      icon: Dna,
+      color: 'from-red-500 to-red-600',
+      bgColor: 'bg-red-500/10',
+      borderColor: 'border-red-500/30',
+      emoji: '🦠',
+      description: 'Organismes unicellulaires sans noyau (procaryotes)',
+      examples: ['E. coli', 'Streptocoque', 'Cyanobactérie', 'Lactobacille']
+    }
+  ];
+  
+  const selectedKingdomData = selectedKingdom ? kingdoms.find(k => k.id === selectedKingdom) : kingdoms[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-architects">
@@ -453,7 +516,143 @@ const ScienceLesson = () => {
             {/* Steps Grid - Full Width - Only show on first page */}
             {currentPage === 0 && (
               <>
-                {isCommunicationLesson ? (
+                {isClassificationLesson ? (
+                  <>
+                    {/* Z-Pattern Layout for Classification */}
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-bold text-white mb-6">Les cinq règnes du vivant</h2>
+                      
+                      {/* Z-Pattern: Top row (left to right) */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        {kingdoms.slice(0, 3).map((kingdom) => {
+                          const Icon = kingdom.icon;
+                          const isSelected = selectedKingdom === kingdom.id || (!selectedKingdom && kingdom.id === 'animaux');
+                          
+                          return (
+                            <button
+                              key={kingdom.id}
+                              onClick={() => setSelectedKingdom(kingdom.id)}
+                              className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                                isSelected
+                                  ? `${kingdom.bgColor} ${kingdom.borderColor} border-opacity-60 shadow-lg`
+                                  : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                              }`}
+                            >
+                              <div className="flex items-start space-x-4">
+                                <div className={`p-3 rounded-xl bg-gradient-to-br ${kingdom.color} flex-shrink-0`}>
+                                  <Icon className="w-6 h-6 text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center space-x-2 mb-1">
+                                    <span className="text-2xl">{kingdom.emoji}</span>
+                                    <h3 className="text-lg font-bold text-white">{kingdom.title}</h3>
+                                  </div>
+                                  <p className="text-sm text-gray-400 leading-relaxed">{kingdom.description}</p>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      
+                      {/* Z-Pattern: Diagonal connection (visual flow) */}
+                      <div className="flex justify-center mb-4">
+                        <div className="w-px h-8 bg-gradient-to-b from-slate-600 to-transparent"></div>
+                      </div>
+                      
+                      {/* Z-Pattern: Bottom row (left to right) */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {kingdoms.slice(3, 5).map((kingdom) => {
+                          const Icon = kingdom.icon;
+                          const isSelected = selectedKingdom === kingdom.id;
+                          
+                          return (
+                            <button
+                              key={kingdom.id}
+                              onClick={() => setSelectedKingdom(kingdom.id)}
+                              className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                                isSelected
+                                  ? `${kingdom.bgColor} ${kingdom.borderColor} border-opacity-60 shadow-lg`
+                                  : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                              }`}
+                            >
+                              <div className="flex items-start space-x-4">
+                                <div className={`p-3 rounded-xl bg-gradient-to-br ${kingdom.color} flex-shrink-0`}>
+                                  <Icon className="w-6 h-6 text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center space-x-2 mb-1">
+                                    <span className="text-2xl">{kingdom.emoji}</span>
+                                    <h3 className="text-lg font-bold text-white">{kingdom.title}</h3>
+                                  </div>
+                                  <p className="text-sm text-gray-400 leading-relaxed">{kingdom.description}</p>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Example Box - Z-Pattern: Right side */}
+                    <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6 relative">
+                      {/* Sparkle icon in bottom right */}
+                      <div className="absolute bottom-4 right-4 text-yellow-400/60">
+                        <Sparkles className="w-5 h-5" />
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-cyan-300 mb-6 flex items-center space-x-2">
+                        <TreePine className="w-5 h-5" />
+                        <span>Exemples du règne {selectedKingdomData.title}</span>
+                      </h3>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        {/* Visual Card Section */}
+                        <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                          <div className="flex flex-col items-center justify-center h-full">
+                            <div className={`w-40 h-40 rounded-full ${selectedKingdomData.bgColor} border-4 ${selectedKingdomData.borderColor} flex items-center justify-center mb-4 shadow-lg`}>
+                              <span className="text-7xl">{selectedKingdomData.emoji}</span>
+                            </div>
+                            <div className="text-center">
+                              <h4 className="text-white font-bold text-lg mb-2">{selectedKingdomData.title}</h4>
+                              <p className="text-gray-400 text-sm">{selectedKingdomData.description}</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Examples Section */}
+                        <div className="space-y-4">
+                          {/* Dashed arrow pointing to examples */}
+                          <div className="flex items-center space-x-2 text-cyan-400/60 mb-2">
+                            <div className="flex-1 border-t-2 border-dashed border-cyan-400/40"></div>
+                            <ArrowRight className="w-4 h-4" />
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-lg font-bold text-white mb-3">Exemples d'organismes:</h4>
+                            <div className="grid grid-cols-2 gap-3 mb-4">
+                              {selectedKingdomData.examples.map((example, index) => (
+                                <div
+                                  key={index}
+                                  className={`${selectedKingdomData.bgColor} border ${selectedKingdomData.borderColor} rounded-xl p-3 text-center`}
+                                >
+                                  <p className="text-white font-semibold text-sm">{example}</p>
+                                </div>
+                              ))}
+                            </div>
+                            
+                            {/* Info box */}
+                            <div className={`${selectedKingdomData.bgColor} border ${selectedKingdomData.borderColor} rounded-xl p-4 mt-4`}>
+                              <p className="text-white font-semibold text-sm">
+                                Le règne {selectedKingdomData.title} regroupe des organismes qui partagent des caractéristiques communes importantes.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : isCommunicationLesson ? (
                   <>
                     <div className="mb-8">
                       <h2 className="text-2xl font-bold text-white mb-6">Les aspects de la communication scientifique</h2>
