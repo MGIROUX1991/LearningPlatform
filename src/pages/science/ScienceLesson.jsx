@@ -452,58 +452,65 @@ const ScienceLesson = () => {
             )}
 
             {/* Steps Grid - Full Width - Only show on first page */}
-            {currentPage === 0 && isCommunicationLesson ? (
+            {currentPage === 0 && (
               <>
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-white mb-6">Les aspects de la communication scientifique</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {communicationAspects.map((aspect) => {
-                      const Icon = aspect.icon;
-                      const isSelected = selectedCommunication === aspect.id || (!selectedCommunication && aspect.id === 'formats');
-                      
-                      return (
-                        <button
-                          key={aspect.id}
-                          onClick={() => setSelectedCommunication(aspect.id)}
-                          className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
-                            isSelected
-                              ? `${aspect.bgColor} ${aspect.borderColor} border-opacity-60 shadow-lg`
-                              : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
-                          }`}
-                        >
-                          <div className="flex items-start space-x-4">
-                            <div className={`p-3 rounded-xl bg-gradient-to-br ${aspect.color} flex-shrink-0`}>
-                              <Icon className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-lg font-bold text-white mb-1">{aspect.title}</h3>
-                              <p className="text-sm text-gray-400 leading-relaxed">{aspect.description}</p>
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Example Box - Separate Section */}
-                <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
-                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
-                    <MessageSquare className="w-5 h-5" />
-                    <span>{selectedCommunicationData.example.title}</span>
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
-                      <div className="text-5xl mb-3">{selectedCommunicationData.example.illustration}</div>
-                      <p className="text-sm text-gray-400">Illustration</p>
+                {isCommunicationLesson ? (
+                  <>
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-bold text-white mb-6">Les aspects de la communication scientifique</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {communicationAspects.map((aspect) => {
+                          const Icon = aspect.icon;
+                          const isSelected = selectedCommunication === aspect.id || (!selectedCommunication && aspect.id === 'formats');
+                          
+                          return (
+                            <button
+                              key={aspect.id}
+                              onClick={() => setSelectedCommunication(aspect.id)}
+                              className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                                isSelected
+                                  ? `${aspect.bgColor} ${aspect.borderColor} border-opacity-60 shadow-lg`
+                                  : 'bg-slate-700/30 border-slate-600/30 hover:border-slate-500/50'
+                              }`}
+                            >
+                              <div className="flex items-start space-x-4">
+                                <div className={`p-3 rounded-xl bg-gradient-to-br ${aspect.color} flex-shrink-0`}>
+                                  <Icon className="w-6 h-6 text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="text-lg font-bold text-white mb-1">{aspect.title}</h3>
+                                  <p className="text-sm text-gray-400 leading-relaxed">{aspect.description}</p>
+                                </div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">
-                      {selectedCommunicationData.example.content}
-                    </p>
-                  </div>
-                </div>
-              </>
-            ) : currentPage === 0 ? (
+
+                    {/* Example Box - Separate Section */}
+                    <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6 relative">
+                      {/* Sparkle icon in bottom right */}
+                      <div className="absolute bottom-4 right-4 text-yellow-400/60">
+                        <Sparkles className="w-5 h-5" />
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-cyan-300 mb-6 flex items-center space-x-2">
+                        <MessageSquare className="w-5 h-5" />
+                        <span>{selectedCommunicationData.example.title}</span>
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
+                          <div className="text-5xl mb-3">{selectedCommunicationData.example.illustration}</div>
+                          <p className="text-sm text-gray-400">Illustration</p>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed">
+                          {selectedCommunicationData.example.content}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
               <>
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
@@ -865,6 +872,8 @@ const ScienceLesson = () => {
                     </div>
                   )}
                 </div>
+                </>
+                )}
               </>
             )}
 
