@@ -292,21 +292,30 @@ const ScienceLesson = () => {
     }
   }, [lessonId]);
 
-  // Load lesson from database
+  // Load lesson from database (same pattern as HistoryLesson)
   useEffect(() => {
     const loadLesson = async () => {
       setLoading(true);
       try {
-        const lessons = await lessonService.getLessons('science', null, {});
-        const dbLesson = lessons.find(l => l.id === lessonId || l.chapter_id === lessonId);
-        
-        if (dbLesson) {
+        // Try to get lesson from database by chapter_id (same as history)
+        const lessons = await lessonService.getLessons('science', lessonId);
+        if (lessons && lessons.length > 0) {
+          const dbLesson = lessons[0]; // Get first lesson for this chapter
+          
+          // Convert database format to component format (same as history)
+          // Split content by double newlines to create pages
           const contentParagraphs = dbLesson.content.split(/\n\n+/).filter(p => p.trim());
           const pages = contentParagraphs.map((paragraph, index) => {
             const page = { content: paragraph.trim() };
             
+            // Add fun_fact to first page if it exists
             if (index === 0 && dbLesson.fun_fact) {
               page.funFact = dbLesson.fun_fact;
+            }
+            
+            // Add vocabulary to second page if it exists
+            if (index === 1 && dbLesson.vocabulary) {
+              page.vocabulary = dbLesson.vocabulary;
             }
             
             return page;
@@ -320,11 +329,13 @@ const ScienceLesson = () => {
           
           setLesson(convertedLesson);
         } else {
+          // Fallback to hardcoded content
           const fallbackLesson = fallbackLessonContent[lessonId] || fallbackLessonContent['introduction-methode-scientifique'];
           setLesson(fallbackLesson);
         }
       } catch (error) {
         console.error('Error loading lesson:', error);
+        // Fallback to hardcoded content on error
         const fallbackLesson = fallbackLessonContent[lessonId] || fallbackLessonContent['introduction-methode-scientifique'];
         setLesson(fallbackLesson);
       } finally {

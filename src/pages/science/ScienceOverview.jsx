@@ -222,7 +222,7 @@ const ScienceOverview = () => {
                         {lesson.xp_reward} XP
                       </span>
                       <Link
-                        to={`/science/lesson/${lessonId}`}
+                        to={`/science/lesson/${lesson.chapter_id || lesson.id}`}
                         onClick={() => {
                           // Mark lesson as visited when clicking
                           const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
