@@ -30,7 +30,27 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple d\'observation',
         content: 'Vous remarquez que les plantes près de la fenêtre poussent mieux que celles dans le placard.',
-        illustration: '🌱☀️ vs 🌱🌑'
+        illustration: '🌱☀️ vs 🌱🌑',
+        hasVisualComparison: true,
+        comparison: {
+          items: [
+            {
+              label: 'Plante au soleil',
+              icon: '🌱',
+              bgColor: 'bg-yellow-500/20',
+              borderColor: 'border-yellow-400/50',
+              description: 'Plante près de la fenêtre'
+            },
+            {
+              label: 'Plante dans le noir',
+              icon: '🌱',
+              bgColor: 'bg-slate-600/30',
+              borderColor: 'border-slate-500/50',
+              description: 'Plante dans le placard'
+            }
+          ],
+          observation: 'Les plantes près de la fenêtre sont plus grandes et plus vertes.'
+        }
       }
     },
     {
@@ -44,7 +64,19 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple de question',
         content: 'Pourquoi les plantes poussent-elles mieux au soleil?',
-        illustration: '❓'
+        illustration: '❓',
+        hasVisualCard: true,
+        visualCard: {
+          icon: '❓',
+          bgColor: 'bg-green-500/20',
+          borderColor: 'border-green-400/50',
+          question: 'Pourquoi les plantes poussent-elles mieux au soleil?',
+          characteristics: [
+            'Question claire et précise',
+            'Peut être testée par une expérience',
+            'Porte sur un phénomène observable'
+          ]
+        }
       }
     },
     {
@@ -58,7 +90,15 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple d\'hypothèse',
         content: 'Les plantes ont besoin de lumière pour faire la photosynthèse et grandir.',
-        illustration: '💡'
+        illustration: '💡',
+        hasVisualCard: true,
+        visualCard: {
+          icon: '💡',
+          bgColor: 'bg-purple-500/20',
+          borderColor: 'border-purple-400/50',
+          hypothesis: 'Les plantes ont besoin de lumière pour faire la photosynthèse et grandir.',
+          explanation: 'Cette hypothèse peut être testée en comparant la croissance de plantes avec et sans lumière.'
+        }
       }
     },
     {
@@ -72,7 +112,19 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple d\'expérience',
         content: 'Placer deux plantes identiques: une au soleil, une dans le noir. Mesurer leur croissance après 2 semaines.',
-        illustration: '🔬'
+        illustration: '🔬',
+        hasVisualSteps: true,
+        visualSteps: {
+          icon: '🔬',
+          bgColor: 'bg-teal-500/20',
+          borderColor: 'border-teal-400/50',
+          steps: [
+            { number: 1, text: 'Placer deux plantes identiques' },
+            { number: 2, text: 'Une au soleil, une dans le noir' },
+            { number: 3, text: 'Mesurer leur croissance après 2 semaines' }
+          ],
+          variables: 'Variable indépendante: lumière | Variable dépendante: croissance'
+        }
       }
     },
     {
@@ -112,7 +164,15 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple de conclusion',
         content: 'L\'hypothèse est confirmée: les plantes ont besoin de lumière pour bien pousser.',
-        illustration: '✅'
+        illustration: '✅',
+        hasVisualCard: true,
+        visualCard: {
+          icon: '✅',
+          bgColor: 'bg-red-500/20',
+          borderColor: 'border-red-400/50',
+          conclusion: 'L\'hypothèse est confirmée: les plantes ont besoin de lumière pour bien pousser.',
+          result: 'Les données montrent une différence significative entre les deux conditions.'
+        }
       }
     },
   ];
@@ -635,6 +695,161 @@ const ScienceLesson = () => {
                             <p className="text-green-300 font-semibold">
                               <span className="text-green-400">Conclusion: </span>
                               {selectedStepData.example.conclusion}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : selectedStepData.example.hasVisualComparison ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                      {/* Visual Comparison Section */}
+                      <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="flex items-center justify-center gap-6">
+                          {selectedStepData.example.comparison.items.map((item, index) => (
+                            <div key={index} className="flex flex-col items-center">
+                              <div className={`w-32 h-32 rounded-full ${item.bgColor} border-4 ${item.borderColor} flex items-center justify-center mb-3 shadow-lg`}>
+                                <span className="text-6xl">{item.icon}</span>
+                              </div>
+                              <div className="text-center">
+                                <p className="text-white font-semibold text-sm mb-1">{item.label}</p>
+                                <p className="text-gray-400 text-xs">{item.description}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-6 text-center">
+                          <span className="text-gray-400 text-2xl font-bold">VS</span>
+                        </div>
+                      </div>
+                      
+                      {/* Observation Text Section */}
+                      <div className="space-y-4">
+                        {/* Dashed arrow pointing to observation */}
+                        <div className="flex items-center space-x-2 text-cyan-400/60 mb-2">
+                          <div className="flex-1 border-t-2 border-dashed border-cyan-400/40"></div>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-white mb-3">Observation:</h4>
+                          <p className="text-gray-300 leading-relaxed mb-4">
+                            {selectedStepData.example.comparison.observation}
+                          </p>
+                          
+                          {/* Observation box */}
+                          <div className="bg-blue-500/20 border border-blue-500/40 rounded-xl p-4 mt-4">
+                            <p className="text-blue-300 font-semibold">
+                              <span className="text-blue-400">Note: </span>
+                              {selectedStepData.example.content}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : selectedStepData.example.hasVisualCard ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                      {/* Visual Card Section */}
+                      <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <div className={`w-40 h-40 rounded-full ${selectedStepData.example.visualCard.bgColor} border-4 ${selectedStepData.example.visualCard.borderColor} flex items-center justify-center mb-4 shadow-lg`}>
+                            <span className="text-7xl">{selectedStepData.example.visualCard.icon}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Content Section */}
+                      <div className="space-y-4">
+                        {/* Dashed arrow pointing to content */}
+                        <div className="flex items-center space-x-2 text-cyan-400/60 mb-2">
+                          <div className="flex-1 border-t-2 border-dashed border-cyan-400/40"></div>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                        
+                        <div>
+                          {selectedStepData.example.visualCard.question && (
+                            <>
+                              <h4 className="text-lg font-bold text-white mb-3">Question:</h4>
+                              <p className="text-gray-300 leading-relaxed mb-4 text-lg">
+                                {selectedStepData.example.visualCard.question}
+                              </p>
+                              <ul className="space-y-2 mb-4">
+                                {selectedStepData.example.visualCard.characteristics?.map((char, index) => (
+                                  <li key={index} className="text-gray-300 flex items-center space-x-2">
+                                    <span className="text-cyan-400">•</span>
+                                    <span>{char}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </>
+                          )}
+                          {selectedStepData.example.visualCard.hypothesis && (
+                            <>
+                              <h4 className="text-lg font-bold text-white mb-3">Hypothèse:</h4>
+                              <p className="text-gray-300 leading-relaxed mb-4">
+                                {selectedStepData.example.visualCard.hypothesis}
+                              </p>
+                              <p className="text-gray-400 text-sm italic">
+                                {selectedStepData.example.visualCard.explanation}
+                              </p>
+                            </>
+                          )}
+                          {selectedStepData.example.visualCard.conclusion && (
+                            <>
+                              <h4 className="text-lg font-bold text-white mb-3">Conclusion:</h4>
+                              <p className="text-gray-300 leading-relaxed mb-4">
+                                {selectedStepData.example.visualCard.conclusion}
+                              </p>
+                              <p className="text-gray-400 text-sm">
+                                {selectedStepData.example.visualCard.result}
+                              </p>
+                            </>
+                          )}
+                          
+                          {/* Info box */}
+                          <div className={`${selectedStepData.example.visualCard.bgColor} border ${selectedStepData.example.visualCard.borderColor} rounded-xl p-4 mt-4`}>
+                            <p className="text-white font-semibold">
+                              {selectedStepData.example.content}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : selectedStepData.example.hasVisualSteps ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                      {/* Visual Steps Section */}
+                      <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <div className={`w-40 h-40 rounded-full ${selectedStepData.example.visualSteps.bgColor} border-4 ${selectedStepData.example.visualSteps.borderColor} flex items-center justify-center mb-4 shadow-lg`}>
+                            <span className="text-7xl">{selectedStepData.example.visualSteps.icon}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Steps Content Section */}
+                      <div className="space-y-4">
+                        {/* Dashed arrow pointing to steps */}
+                        <div className="flex items-center space-x-2 text-cyan-400/60 mb-2">
+                          <div className="flex-1 border-t-2 border-dashed border-cyan-400/40"></div>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-white mb-3">Étapes de l'expérience:</h4>
+                          <ul className="space-y-3 mb-4">
+                            {selectedStepData.example.visualSteps.steps.map((step, index) => (
+                              <li key={index} className="flex items-start space-x-3">
+                                <div className={`w-8 h-8 rounded-full ${selectedStepData.example.visualSteps.bgColor} border-2 ${selectedStepData.example.visualSteps.borderColor} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                                  <span className="text-white font-bold text-sm">{step.number}</span>
+                                </div>
+                                <span className="text-gray-300 flex-1">{step.text}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          
+                          {/* Variables box */}
+                          <div className={`${selectedStepData.example.visualSteps.bgColor} border ${selectedStepData.example.visualSteps.borderColor} rounded-xl p-4 mt-4`}>
+                            <p className="text-white font-semibold text-sm">
+                              {selectedStepData.example.visualSteps.variables}
                             </p>
                           </div>
                         </div>
