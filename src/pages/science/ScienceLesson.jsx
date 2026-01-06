@@ -193,92 +193,17 @@ const ScienceLesson = () => {
     },
   ];
 
-  // Fallback lesson content for "Introduction à la méthode scientifique"
+  // Minimal fallback for error cases (all lessons should be in database)
   const fallbackLessonContent = {
-    'introduction-methode-scientifique': {
-      title: 'Introduction à la méthode scientifique',
+    default: {
+      title: 'Leçon non trouvée',
       pages: [
         {
-          content: `La méthode scientifique est le processus que les scientifiques utilisent pour comprendre le monde qui nous entoure. C'est une approche systématique et logique qui permet de répondre à des questions, de résoudre des problèmes et de découvrir de nouvelles connaissances.`,
-          funFact: 'La méthode scientifique moderne a été développée au XVIIe siècle par des scientifiques comme Galilée et Francis Bacon. Elle a révolutionné notre façon de comprendre le monde!',
+          content: 'Cette leçon n\'a pas pu être chargée depuis la base de données. Veuillez contacter un administrateur si le problème persiste.',
         },
       ],
       quiz: {
-        questions: [
-          {
-            id: 1,
-            question: 'Quelle est la première étape de la méthode scientifique?',
-            options: ['L\'hypothèse', 'L\'observation', 'L\'expérience', 'La conclusion'],
-            correct: 1,
-          },
-          {
-            id: 2,
-            question: 'Qu\'est-ce qu\'une hypothèse?',
-            options: ['Une observation', 'Une proposition explicative provisoire que l\'on cherche à vérifier', 'Une conclusion', 'Une expérience'],
-            correct: 1,
-          },
-          {
-            id: 3,
-            question: 'Pourquoi est-il important de faire plusieurs essais lors d\'une expérience?',
-            options: ['Pour perdre du temps', 'Pour s\'assurer que les résultats sont fiables', 'Pour compliquer les choses', 'Pour utiliser plus de matériel'],
-            correct: 1,
-          },
-          {
-            id: 4,
-            question: 'Que fait-on si les résultats de l\'expérience ne confirment pas l\'hypothèse?',
-            options: ['On abandonne', 'On propose une nouvelle hypothèse et on recommence', 'On change les résultats', 'On ignore les résultats'],
-            correct: 1,
-          },
-          {
-            id: 5,
-            question: 'Qu\'est-ce qu\'une variable dans une expérience?',
-            options: ['Une constante', 'Un facteur qui peut changer', 'Un résultat', 'Une hypothèse'],
-            correct: 1,
-          },
-        ],
-      },
-    },
-    'communiquer-resultats-scientifiques': {
-      title: 'Communiquer des résultats scientifiques',
-      pages: [
-        {
-          content: `Communiquer ses résultats scientifiques est une étape essentielle de la méthode scientifique. Après avoir mené une expérience et analysé les données, il est important de partager ses découvertes de manière claire et précise.`,
-          funFact: 'Saviez-vous que le premier article scientifique moderne a été publié en 1665 dans la revue "Philosophical Transactions"? Depuis, la communication scientifique est devenue un pilier de la recherche!',
-        },
-      ],
-      quiz: {
-        questions: [
-          {
-            id: 1,
-            question: 'Quelle est l\'étape essentielle après avoir mené une expérience?',
-            options: ['Oublier les résultats', 'Communiquer ses résultats', 'Refaire l\'expérience', 'Changer d\'hypothèse'],
-            correct: 1,
-          },
-          {
-            id: 2,
-            question: 'Qu\'est-ce qu\'un bon rapport scientifique doit contenir?',
-            options: ['Seulement des résultats', 'Introduction, méthodologie, résultats, discussion et conclusion', 'Seulement une conclusion', 'Des opinions personnelles'],
-            correct: 1,
-          },
-          {
-            id: 3,
-            question: 'Pourquoi les graphiques sont-ils importants dans la communication scientifique?',
-            options: ['Pour décorer le rapport', 'Pour présenter les données de manière visuelle et claire', 'Pour compliquer les choses', 'Pour utiliser plus d\'espace'],
-            correct: 1,
-          },
-          {
-            id: 4,
-            question: 'Quelle qualité est essentielle dans la communication scientifique?',
-            options: ['La subjectivité', 'L\'objectivité', 'L\'exagération', 'La simplification excessive'],
-            correct: 1,
-          },
-          {
-            id: 5,
-            question: 'Que doit-on faire si les résultats ne confirment pas l\'hypothèse initiale?',
-            options: ['Les cacher', 'Les présenter tels qu\'ils sont avec objectivité', 'Les modifier', 'Les ignorer'],
-            correct: 1,
-          },
-        ],
+        questions: [],
       },
     },
   };
@@ -329,15 +254,14 @@ const ScienceLesson = () => {
           
           setLesson(convertedLesson);
         } else {
-          // Fallback to hardcoded content
-          const fallbackLesson = fallbackLessonContent[lessonId] || fallbackLessonContent['introduction-methode-scientifique'];
-          setLesson(fallbackLesson);
+          // Lesson not found in database - show error message
+          console.warn(`Lesson not found in database: ${lessonId}`);
+          setLesson(fallbackLessonContent.default);
         }
       } catch (error) {
         console.error('Error loading lesson:', error);
-        // Fallback to hardcoded content on error
-        const fallbackLesson = fallbackLessonContent[lessonId] || fallbackLessonContent['introduction-methode-scientifique'];
-        setLesson(fallbackLesson);
+        // Fallback to error message on error
+        setLesson(fallbackLessonContent.default);
       } finally {
         setLoading(false);
       }
