@@ -86,7 +86,19 @@ const ScienceLesson = () => {
       example: {
         title: 'Exemple d\'analyse',
         content: 'La plante au soleil a grandi de 10 cm, celle dans le noir de 2 cm. Les données confirment l\'hypothèse.',
-        illustration: '📊'
+        illustration: '📊',
+        hasChart: true,
+        chartData: {
+          labels: ['Soleil', 'Noir'],
+          values: [10, 2],
+          colors: ['#10b981', '#3b82f6'],
+          unit: 'cm'
+        },
+        dataPoints: [
+          { label: 'Plante au soleil', value: '10 cm' },
+          { label: 'Plante dans noir', value: '2 cm' }
+        ],
+        conclusion: 'Les données confirment l\'hypothèse.'
       }
     },
     {
@@ -468,20 +480,177 @@ const ScienceLesson = () => {
                 </div>
 
                 {/* Example Box - Separate Section */}
-                <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6">
-                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center space-x-2">
+                <div className="mb-8 bg-slate-800/60 backdrop-blur-sm rounded-2xl border-2 border-dashed border-cyan-400/40 p-6 relative">
+                  {/* Sparkle icon in bottom right */}
+                  <div className="absolute bottom-4 right-4 text-yellow-400/60">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-cyan-300 mb-6 flex items-center space-x-2">
                     <FlaskConical className="w-5 h-5" />
                     <span>{selectedStepData.example.title}</span>
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                    <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
-                      <div className="text-5xl mb-3">{selectedStepData.example.illustration}</div>
-                      <p className="text-sm text-gray-400">Illustration</p>
+                  
+                  {selectedStepData.example.hasChart ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                      {/* Chart Section */}
+                      <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-700/50">
+                        <div className="relative h-64 w-full">
+                          <svg 
+                            viewBox="0 0 300 250" 
+                            className="w-full h-full"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            {/* Grid lines */}
+                            <defs>
+                              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148, 163, 184, 0.15)" strokeWidth="1"/>
+                              </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#grid)" />
+                            
+                            {/* Y-axis labels */}
+                            {[0, 2, 4, 6, 8, 10].map((val) => {
+                              const yPos = 200 - (val * 18);
+                              return (
+                                <g key={val}>
+                                  <line
+                                    x1="40"
+                                    y1={yPos}
+                                    x2="260"
+                                    y2={yPos}
+                                    stroke="rgba(148, 163, 184, 0.2)"
+                                    strokeWidth="0.5"
+                                    strokeDasharray="2,2"
+                                  />
+                                  <text
+                                    x="35"
+                                    y={yPos + 4}
+                                    className="text-xs fill-gray-400 font-medium"
+                                    textAnchor="end"
+                                  >
+                                    {val}
+                                  </text>
+                                </g>
+                              );
+                            })}
+                            
+                            {/* Bars */}
+                            {selectedStepData.example.chartData.labels.map((label, index) => {
+                              const value = selectedStepData.example.chartData.values[index];
+                              const color = selectedStepData.example.chartData.colors[index];
+                              const maxValue = 10;
+                              const barHeight = (value / maxValue) * 180;
+                              const barWidth = 50;
+                              const spacing = 80;
+                              const xPosition = 60 + (index * spacing);
+                              const yPosition = 200 - barHeight;
+                              
+                              return (
+                                <g key={label}>
+                                  {/* Bar with gradient */}
+                                  <defs>
+                                    <linearGradient id={`gradient-${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <stop offset="0%" stopColor={color} stopOpacity="0.9" />
+                                      <stop offset="100%" stopColor={color} stopOpacity="0.7" />
+                                    </linearGradient>
+                                  </defs>
+                                  <rect
+                                    x={xPosition}
+                                    y={yPosition}
+                                    width={barWidth}
+                                    height={barHeight}
+                                    fill={`url(#gradient-${index})`}
+                                    rx="6"
+                                    className="drop-shadow-md"
+                                  />
+                                  {/* Value label on bar */}
+                                  <text
+                                    x={xPosition + barWidth / 2}
+                                    y={yPosition - 8}
+                                    className="text-sm font-bold fill-white"
+                                    textAnchor="middle"
+                                    style={{ fontSize: '12px' }}
+                                  >
+                                    {value} {selectedStepData.example.chartData.unit}
+                                  </text>
+                                  {/* X-axis label */}
+                                  <text
+                                    x={xPosition + barWidth / 2}
+                                    y={220}
+                                    className="text-sm fill-gray-300 font-medium"
+                                    textAnchor="middle"
+                                    style={{ fontSize: '13px' }}
+                                  >
+                                    {label}
+                                  </text>
+                                </g>
+                              );
+                            })}
+                            
+                            {/* X-axis line */}
+                            <line
+                              x1="40"
+                              y1="200"
+                              x2="260"
+                              y2="200"
+                              stroke="rgba(148, 163, 184, 0.4)"
+                              strokeWidth="2"
+                            />
+                            
+                            {/* Y-axis line */}
+                            <line
+                              x1="40"
+                              y1="20"
+                              x2="40"
+                              y2="200"
+                              stroke="rgba(148, 163, 184, 0.4)"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      
+                      {/* Data and Conclusion Section */}
+                      <div className="space-y-4">
+                        {/* Dashed arrow pointing to data */}
+                        <div className="flex items-center space-x-2 text-cyan-400/60 mb-2">
+                          <div className="flex-1 border-t-2 border-dashed border-cyan-400/40"></div>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-white mb-3">Données recueillies:</h4>
+                          <ul className="space-y-2 mb-4">
+                            {selectedStepData.example.dataPoints.map((point, index) => (
+                              <li key={index} className="text-gray-300 flex items-center space-x-2">
+                                <span className="text-cyan-400">•</span>
+                                <span>{point.label}: <span className="font-semibold text-white">[{point.value}]</span></span>
+                              </li>
+                            ))}
+                          </ul>
+                          
+                          {/* Conclusion box */}
+                          <div className="bg-green-500/20 border border-green-500/40 rounded-xl p-4 mt-4">
+                            <p className="text-green-300 font-semibold">
+                              <span className="text-green-400">Conclusion: </span>
+                              {selectedStepData.example.conclusion}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">
-                      {selectedStepData.example.content}
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                      <div className="bg-slate-900/50 rounded-xl p-8 text-center border border-slate-700/50">
+                        <div className="text-5xl mb-3">{selectedStepData.example.illustration}</div>
+                        <p className="text-sm text-gray-400">Illustration</p>
+                      </div>
+                      <p className="text-gray-300 leading-relaxed">
+                        {selectedStepData.example.content}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </>
             )}
