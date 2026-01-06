@@ -40,7 +40,9 @@ const ScienceOverview = () => {
 
   // Get lesson status helper function
   const getLessonStatus = (lesson) => {
-    const lessonId = lesson.id || lesson.chapter_id || 'introduction-methode-scientifique';
+    const lessonId = lesson.id;
+    if (!lessonId) return 'not-started';
+    
     const completedLessons = progress?.science?.completedLessons || {};
     const isCompleted = completedLessons[lessonId] === true;
     
@@ -170,7 +172,6 @@ const ScienceOverview = () => {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {chapterLessons.map((lesson) => {
-                  const lessonId = lesson.id || lesson.chapter_id || 'introduction-methode-scientifique';
                   const status = getLessonStatus(lesson);
                   
                   return (
@@ -222,11 +223,11 @@ const ScienceOverview = () => {
                         {lesson.xp_reward} XP
                       </span>
                       <Link
-                        to={`/science/lesson/${lesson.chapter_id || lesson.id}`}
+                        to={`/science/lesson/${lesson.id}`}
                         onClick={() => {
                           // Mark lesson as visited when clicking
                           const visitedLessons = JSON.parse(localStorage.getItem('visited_lessons') || '{}');
-                          visitedLessons[`science_${lessonId}`] = true;
+                          visitedLessons[`science_${lesson.id}`] = true;
                           localStorage.setItem('visited_lessons', JSON.stringify(visitedLessons));
                         }}
                         className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 rounded-lg transition-all text-sm"

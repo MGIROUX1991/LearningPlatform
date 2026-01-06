@@ -289,15 +289,14 @@ const ScienceLesson = () => {
     }
   }, [lessonId]);
 
-  // Load lesson from database (same pattern as HistoryLesson)
+  // Load lesson from database by unique ID
   useEffect(() => {
     const loadLesson = async () => {
       setLoading(true);
       try {
-        // Try to get lesson from database by chapter_id (same as history)
-        const lessons = await lessonService.getLessons('science', lessonId);
-        if (lessons && lessons.length > 0) {
-          const dbLesson = lessons[0]; // Get first lesson for this chapter
+        // Get lesson by unique ID
+        const dbLesson = await lessonService.getLesson(lessonId);
+        if (dbLesson) {
           
           // Convert database format to component format (same as history)
           // Split content by double newlines to create pages
