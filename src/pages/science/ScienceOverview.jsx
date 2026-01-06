@@ -6,6 +6,32 @@ import { QUEBEC_CURRICULUM } from '../../data/quebecCurriculum';
 import { getFrenchYears, getFrenchYearName, getEnglishYearName } from '../../utils/yearTranslations';
 import { useApp } from '../../context/AppContext';
 
+// French chapter name mapping
+const CHAPTER_NAMES = {
+  'living-things': 'Les êtres vivants',
+  'material-world': 'Le monde matériel',
+  'earth-space': 'La Terre et l\'espace',
+  'technological-world': 'Le monde technologique',
+  'introduction-methode-scientifique': 'Introduction à la méthode scientifique',
+};
+
+// Brief lesson summaries (not from lesson content)
+const LESSON_SUMMARIES = {
+  'Introduction à la méthode scientifique': 'Découvrez le processus systématique utilisé par les scientifiques pour explorer et comprendre le monde qui nous entoure.',
+  'Propriétés et changements de la matière': 'Explorez les différentes propriétés de la matière et apprenez à distinguer les changements physiques des changements chimiques.',
+  'Le système solaire et notre planète': 'Découvrez notre système solaire, les planètes qui le composent et les caractéristiques uniques de la Terre.',
+  'Les machines simples': 'Apprenez comment les machines simples facilitent le travail et découvrez les six types de machines simples.',
+  'Classification des êtres vivants': 'Explorez comment les scientifiques organisent et classifient les êtres vivants pour mieux les comprendre.',
+  'Les états de la matière': 'Découvrez les trois états principaux de la matière et comment ils changent sous l\'effet de la température et de la pression.',
+  'Le cycle de l\'eau': 'Comprenez le processus continu par lequel l\'eau se déplace sur, au-dessus et sous la surface de la Terre.',
+  'L\'énergie et le travail': 'Explorez les différentes formes d\'énergie et apprenez comment l\'énergie peut être transformée d\'une forme à une autre.',
+  'Communiquer des résultats scientifiques': 'Apprenez à présenter vos découvertes scientifiques de manière claire et efficace à l\'aide de graphiques, tableaux et rapports.',
+  'Mesures et unités scientifiques': 'Découvrez le Système international d\'unités et apprenez à mesurer avec précision en science.',
+  'Représenter la Terre': 'Explorez les différents types de cartes et de projections utilisés pour représenter notre planète.',
+  'Sécurité et éthique en science': 'Apprenez les règles de sécurité essentielles en laboratoire et les principes éthiques qui guident la recherche scientifique.',
+  'Communiquer à l\'aide des langages scientifiques': 'Maîtrisez les techniques de communication scientifique, de la rédaction de rapports à la présentation orale.',
+};
+
 const ScienceOverview = () => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -139,8 +165,8 @@ const ScienceOverview = () => {
               key={chapterId}
               className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-6 border border-blue-500/20"
             >
-              <h2 className="text-2xl font-bold text-white mb-4 capitalize">
-                {chapterId.replace(/-/g, ' ')}
+              <h2 className="text-2xl font-bold text-white mb-4">
+                {CHAPTER_NAMES[chapterId] || chapterId.replace(/-/g, ' ')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {chapterLessons.map((lesson) => {
@@ -168,13 +194,13 @@ const ScienceOverview = () => {
                     <div className="flex items-start justify-between mb-2 pr-8">
                       <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
                       {lesson.school_year && (
-                        <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs">
+                        <span className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs whitespace-nowrap">
                           {getFrenchYearName(lesson.school_year)}
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                      {lesson.content.substring(0, 100)}...
+                    <p className="text-gray-400 text-sm mb-3">
+                      {LESSON_SUMMARIES[lesson.title] || 'Découvrez ce sujet fascinant de science et technologie.'}
                     </p>
                     {lesson.competencies && lesson.competencies.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
