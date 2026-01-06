@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { lessonService } from '../../services/adminService';
-import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles, FileText, Presentation, Image, Video, TrendingUp, Eye, Target, TreePine, Fish, Leaf, Mushroom, Bug, Dna } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, FlaskConical, Search, Lightbulb, TestTube, BarChart3, MessageSquare, Sparkles, FileText, Presentation, Image, Video, TrendingUp, Eye, Target, TreePine, Fish, Leaf, Flower2, Bug, Dna } from 'lucide-react';
 
 const ScienceLesson = () => {
   const { lessonId } = useParams();
@@ -429,7 +429,7 @@ const ScienceLesson = () => {
     {
       id: 'champignons',
       title: 'Champignons',
-      icon: Mushroom,
+      icon: Flower2,
       color: 'from-orange-500 to-orange-600',
       bgColor: 'bg-orange-500/10',
       borderColor: 'border-orange-500/30',
