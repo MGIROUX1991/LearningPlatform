@@ -427,13 +427,11 @@ const ScienceLesson = () => {
               </div>
             </div>
 
-            {/* Intro Text */}
-            {currentPage === 0 && (
+            {/* Content from database - Show for all pages */}
+            {currentPageData.content && (
               <div className="mb-8">
-                <p className="text-base md:text-lg text-gray-300 leading-relaxed">
-                  {isCommunicationLesson 
-                    ? 'Communiquer ses résultats scientifiques est une étape essentielle de la méthode scientifique. Après avoir mené une expérience et analysé les données, il est important de partager ses découvertes de manière claire et précise.'
-                    : 'La science est une façon d\'explorer et de comprendre le monde qui nous entoure. Les scientifiques utilisent une méthode systématique appelée "méthode scientifique" pour répondre à des questions et résoudre des problèmes.'}
+                <p className="text-base md:text-lg text-gray-300 leading-relaxed whitespace-pre-line">
+                  {currentPageData.content}
                 </p>
               </div>
             )}
@@ -453,8 +451,8 @@ const ScienceLesson = () => {
               </div>
             )}
 
-            {/* Steps Grid - Full Width */}
-            {isCommunicationLesson ? (
+            {/* Steps Grid - Full Width - Only show on first page */}
+            {currentPage === 0 && isCommunicationLesson ? (
               <>
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-white mb-6">Les aspects de la communication scientifique</h2>
@@ -505,7 +503,7 @@ const ScienceLesson = () => {
                   </div>
                 </div>
               </>
-            ) : (
+            ) : currentPage === 0 ? (
               <>
                 <div className="mb-8">
                   <h2 className="text-2xl font-bold text-white mb-6">Les étapes de la méthode scientifique</h2>
